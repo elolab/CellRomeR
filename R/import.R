@@ -1,22 +1,3 @@
-library("XML")
-
-#### TrackMate XML import ####
-#' #### read data from TrackMate XML file
-#'
-#'
-#' Check requirements and install in case needed.
-#' if(!require("xml2")){devtools::install_github("r-lib/xml2")}
-#' require("xml2")
-#' if(!require("XML")){install.packages('XML')}
-#' if(!require("foreach")){install.packages("foreach")}
-#' if(!require("doParallel")){install.packages("doParallel")}
-#'
-#'
-#' Modified from trackR and TrackMateR IRmigr.TMxml functions.
-#'
-#' @param tmXML path to TrackMate XML file
-#'
-#' @export
 CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          experiment = "experiment", sample = "sample",
                          condition = NULL, replicate = NULL, MigrDatObj = NULL,
@@ -38,7 +19,7 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   
   #### auxiliary functions ####
   # Get feature names from retrieved XML feature list
-  getFeatNames <- function(xmllist = featsXML) {
+  getFeatNames <- function(xmllist = XML::featsXML) {
     Featslist <- c("name",unlist(xmllist))
     names(Featslist) = NULL
     return(Featslist)
@@ -46,7 +27,7 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   
   # Fetch data
   getTMvar <- function(TMxml,var) {
-    sapply(TMxml, xmlGetAttr, var)
+    sapply(TMxml, XML::xmlGetAttr, var)
   }
   
   
@@ -133,16 +114,15 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   }
   
   # Get variable names in TrackMate-XML
-  sublistS <- getNodeSet(TMxml,"//FeatureDeclarations//SpotFeatures//Feature/@feature")
+  sublistS <- XML::getNodeSet(TMxml,"//FeatureDeclarations//SpotFeatures//Feature/@feature")
   varsS = c("ID",getFeatNames(sublistS))
   varsS = varsS[-match(c("MANUAL_SPOT_COLOR"),varsS, nomatch = 0)] # remove "MANUAL_SPOT_COLOR"
-  sublistT <- getNodeSet(TMxml,"//FeatureDeclarations//TrackFeatures//Feature/@feature")
+  sublistT <- XML::getNodeSet(TMxml,"//FeatureDeclarations//TrackFeatures//Feature/@feature")
   varsT = getFeatNames(sublistT)
-  sublistE <- getNodeSet(TMxml,"//FeatureDeclarations//EdgeFeatures//Feature/@feature")
+  sublistE <- XML::getNodeSet(TMxml,"//FeatureDeclarations//EdgeFeatures//Feature/@feature")
   varsE = getFeatNames(sublistE)
   varsE = varsE[-match(c("name","MANUAL_EDGE_COLOR"), varsE, nomatch = 0)] # remove "name" and "MANUAL_EDGE_COLOR"
   varsXML = list(varsSin = varsS, varsTin = varsT, varsEin = varsE)
-  varsXML
   
   # could implement varsdf as with the tables
   varsdf = list(warning = "varsdf not yet implemented for TMxml import.",
@@ -153,10 +133,10 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   ##### Retrieve units #####
   # units
   attrList <- c("spatialunits","timeunits")
-  unitVec <- sapply(attrList, function(x) xpathSApply(TMxml, "//Model", xmlGetAttr, x))
+  unitVec <- sapply(attrList, function(x) XML::xpathSApply(TMxml, "//Model", XML::xmlGetAttr, x))
   unitVec <- c(unitVec,"img width pixels","img height pixels","voxeldepth","timeinterval")
   attrList <- c("pixelwidth","timeinterval","width","height","voxeldepth","timeinterval")
-  valueVec <- sapply(attrList, function(x) xpathSApply(TMxml, "//ImageData", xmlGetAttr, x))
+  valueVec <- sapply(attrList, function(x) XML::xpathSApply(TMxml, "//ImageData", XML::xmlGetAttr, x))
   calibrationDF <- data.frame(value = as.numeric(valueVec),unit = unitVec)
   # <Model spatialunits="µm" timeunits="frame">
   # voxeldepth="1.0" timeinterval="1.0"
@@ -176,8 +156,8 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   ## TrackMate track filtering in metadata could be used to filer tracks.
   ## However, as this is based SPOT_NUMBER < n, TRACK_DISPLACEMENT < 10 etc.
   ## see [link](https://imagej.net/plugins/trackmate/scripting)
-  trackFltXML = getNodeSet(TMxml, "//FilteredTracks//TrackID")
-  TRACK_IDs <- getTMvar(trackFltXML, var = "TRACK_ID")
+  trackFltXML = XML::getNodeSet(TMxml, "//FilteredTracks//TrackID")
+  TRACK_IDs <- XML::getTMvar(trackFltXML, var = "TRACK_ID")
   MigrDatXML@metadata$track_filter = TRACK_IDs
   
   ## TrackMate Log (process later)
@@ -193,7 +173,7 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   
   
   ## TrackMate Image metadata (process later)
-  imageSettingsXML = getNodeSet(TMxml, "//Settings")
+  imageSettingsXML = XML::getNodeSet(TMxml, "//Settings")
   MigrDatXML@metadata$imageSettingsXML = imageSettingsXML
   
   ## TrackMate Image metadata (process later)
@@ -215,9 +195,9 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   # Add tracks data
   #
   #
-  trackXML = getNodeSet(TMxml, "//Track")
+  trackXML = XML::getNodeSet(TMxml, "//Track")
   nms <- getTMvar(trackXML, var = "name")
-  dtTxml <- data.table(matrix(nrow = length(nms), ncol = length(varsXML$varsTin)))
+  dtTxml <- data.table::data.table(matrix(nrow = length(nms), ncol = length(varsXML$varsTin)))
   names(dtTxml) = varsXML$varsTin
   dtTxml[,name:=nms]
   names(dtTxml)[1] = "LABEL"
@@ -242,10 +222,10 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   # Add edges data
   #
   #
-  edgeXML = getNodeSet(TMxml, "//Track//Edge")
+  edgeXML = XML::getNodeSet(TMxml, "//Track//Edge")
   dat1 <- getTMvar(edgeXML, var = varsXML$varsEin[1])
   dat2 <- getTMvar(edgeXML, var = varsXML$varsEin[2])
-  dtExml <- data.table(matrix(nrow = length(dat1), ncol = (length(varsXML[[3]])+2) ))
+  dtExml <- data.table::data.table(matrix(nrow = length(dat1), ncol = (length(varsXML[[3]])+2) ))
   names(dtExml) = c("LABEL","EDGE_ID", varsXML[[3]])
   Labels = paste0("ID",dat1,"_","ID",dat2)
   dtExml[,LABEL:=Labels]
@@ -284,9 +264,9 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   # Add spots data
   #
   #
-  spotsXML <- getNodeSet(TMxml,"//AllSpots//SpotsInFrame//Spot")
+  spotsXML <- XML::getNodeSet(TMxml,"//AllSpots//SpotsInFrame//Spot")
   IDs <- getTMvar(spotsXML,var = "ID")
-  dtSxml <- data.table(matrix(nrow = length(IDs), ncol = length(varsXML$varsSin)))
+  dtSxml <- data.table::data.table(matrix(nrow = length(IDs), ncol = length(varsXML$varsSin)))
   names(dtSxml) = varsXML$varsSin
   dtSxml[,ID:=IDs]
   
