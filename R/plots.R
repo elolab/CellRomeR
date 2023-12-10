@@ -392,7 +392,7 @@ UMAP2DplotC <- function(filename = "filename", dats = fact.spots, x = "x", palet
       ggplot2::geom_point(size=2.5) +
       ggplot2::scale_color_gradient2(low = "white", mid = "darkorange", high = "black") +
       ggplot2::theme(legend.position = "bottom",
-                     ggplot2::legend.text=element_text(size=16) )
+                     legend.text=ggplot2::element_text(size=16) )
   )
   dev.off()
 }
