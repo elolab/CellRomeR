@@ -4,7 +4,8 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          filtering = FALSE,
                          normalize = FALSE,
                          ...){
-  
+  if(!(file.exists(tmXML)))
+    stop(sprintf("Couldn't find file %s", tmXML))
   ### Timing
   strt = Sys.time()
   
@@ -157,7 +158,7 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   ## However, as this is based SPOT_NUMBER < n, TRACK_DISPLACEMENT < 10 etc.
   ## see [link](https://imagej.net/plugins/trackmate/scripting)
   trackFltXML = XML::getNodeSet(TMxml, "//FilteredTracks//TrackID")
-  TRACK_IDs <- XML::getTMvar(trackFltXML, var = "TRACK_ID")
+  TRACK_IDs <- getTMvar(trackFltXML, var = "TRACK_ID")
   MigrDatXML@metadata$track_filter = TRACK_IDs
   
   ## TrackMate Log (process later)
