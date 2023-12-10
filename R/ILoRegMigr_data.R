@@ -316,3 +316,59 @@ init.clustering <- function(MigrObj) {
   cat("\nClustering data.tables for spots, tracks, and edges was added to clustering slot.\n")
   return(MigrObj)
 }
+
+#### Get data ####
+getdtcols <- function(MigrObj, dat.slot = "scaled", type = "STE",
+                      predef =  "none", vars = NULL, incl.pattern = NULL,
+                      excld.pattern = NULL, numerics = TRUE, rnames = FALSE) {
+  
+  predef = match.arg(predef, c("none", "technical", "morphological", "clust", "coord"), several.ok = FALSE)
+  
+  # standard variable names we are not interested in
+  StdP = Std.pattern(MigrObj)
+  
+  # Fetch data.table
+  dt <- getdt(MigrObj, dat.slot = dat.slot, type = type)
+  
+  if (rnames) {
+    rownames(dt) <- dt[["LABEL"]]
+  }
+  
+  
+  # get selected columns
+  if (is.null(incl.pattern) & is.null(vars) & predef=="none" ) {
+    # standard_varnames exclusion only
+    data = dt.colSpt(dt, excld.pattern = excld.pattern, predef = "none", numerics = numerics)
+  } else if (is.null(excld.pattern) & is.null(vars) & predef=="none" ) {
+    # incl.pattern
+    data = dt.colSpt(dt, excld.pattern = NULL, incl.pattern = incl.pattern, predef = "none", numerics = numerics)
+  } else if (!is.null(excld.pattern) & !is.null(incl.pattern) & is.null(vars) & predef=="none" ) {
+    # incl.pattern and exclusion
+    data = dt.colSpt(dt, excld.pattern = excld.pattern, incl.pattern = incl.pattern, predef = "none", numerics = numerics)
+  } else if (is.null(incl.pattern) & is.null(excld.pattern) & predef=="none") {
+    # vars
+    colz <- vars[vars %in% colnames(dt)]
+    data <-  dt[,..colz]
+  } else if (predef %in% c("technical", "morphological", "clust", "coord") ) {
+    # predefined
+    data = dt.colSpt(dt, excld.pattern = NULL, predef = predef, numerics = numerics)
+  } else {print("Incompatible variable choosing at the moment. Check if dat.slot exists!")
+    return(NULL)
+  }
+  return(data)
+}
+
+getlabels <- function(MigrObj,  dat.slot = dat.slot, type = type) {
+  # arguments parsing
+  type = match.arg(type, c("S", "T", "E"))
+  # data.slot check!
+  # in use could be changed to return list without in. pre...
+  in.STE <- ifelse(type == "S", "in.spots", ifelse(type == "T", "in.tracks",  "in.edges"))
+  lbl.STE <- ifelse(type == "S", "LABEL", ifelse(type == "T", "LABEL",  "LABEL"))
+  STE <- gsub("in.", "", in.STE)
+  dat.slot = match.arg(dat.slot, slots.in.use(MigrObj)[[in.STE]])
+  # if error here, it means, that the data is not available, please check the data.slot and type arguments!
+  # fetch data.table
+  labels <- (slot(object = MigrObj, name = STE)[[dat.slot]])[[lbl.STE]]
+  return(labels)
+}
