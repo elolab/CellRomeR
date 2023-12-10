@@ -1,6 +1,6 @@
 #### Main clustering function ####
 
-IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
+CellRomeR.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
                               uniq = "base",
                               kmeans = 0, khclust = 0, kILoReg = 0,
                               predef =  "none",
