@@ -10,7 +10,6 @@ IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
                               set.default = TRUE, threads = 0,...) {
   startTime <- Sys.time()
 
-
   # set thread count
   if (threads==0) {
     threads=parallel::detectCores()
@@ -25,14 +24,6 @@ IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
                     predef = predef,
                     vars = vars, incl.pattern = incl.pattern,
                     excld.pattern = excld.pattern, numerics = TRUE)
-  #data[,STE:= type]
-
-  # dimreducts <- getdtcols(MigrObj, dat.slot = dat.slot, type = type,
-  #                         predef = "coord", numerics = FALSE)
-
-  # if (is.null(MigrObj@clustering[[uniq]])) {
-  #   MigrObj@clustering[[uniq]] <- list()
-  # }
 
   # kmean
   if (kmeans[1]>1) {
@@ -83,10 +74,8 @@ IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
   cat("\nClustering results were stored with ", uniq," identifier in clusterings slot.")
 
   timing=Sys.time() - startTime
-  # cat("\nClustering took: ",timing,"\n\n" )
   cat("\nClustering took: \n" )
   cat(Sys.time() - startTime,"\n\n")
-  #return(MigrObj)
   return(MigrObj)
 
 }
@@ -184,7 +173,6 @@ IRMigr.hclust <- function(mtx, khclust, scale=FALSE) {
 
   d = dist(mtx, method = "euclidean")
   # clustering
-  # h_euclidean = hclust(d, method = "ward.D2")
   h_euclidean = fastcluster::hclust(d, method = "ward.D2")
   hclusts = list()
   for (k in khclust) {
