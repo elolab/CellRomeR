@@ -1,4 +1,2 @@
 export(CellRomeR.import_XML)
-
-
-
+importFrom(data.table, ":=")
