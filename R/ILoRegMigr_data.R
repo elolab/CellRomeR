@@ -382,7 +382,7 @@ getdt <- function(MigrObj, dat.slot = "raw", type = "STE") {
   dat.slot = match.arg(dat.slot, slots.in.use(MigrObj)[[in.STE]])
   # if error here, it means, that the data is not available, please check the data.slot and type arguments!
   # fetch data.table
-  dt <- copy(slot(object = MigrObj, name = STE)[[dat.slot]] )
+  dt <- data.table::copy(slot(object = MigrObj, name = STE)[[dat.slot]] )
   return(dt)
 }
 
@@ -418,6 +418,7 @@ slot.usage <- function(MigrDatObj) {
 #' @export
 dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "none", vars = NULL, numerics = F,
                       StdP = NULL, TechP = NULL, MorphP = NULL) {
+  `%nin%` <- Negate(`%in%`)
   
   if (length(vars)>0) {
     colz <- vars[vars %in% colnames(dt)]
@@ -444,7 +445,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   predef = match.arg(predef, c("coord","technical", "morphological", "clust", "nontechnical", "none"), several.ok = TRUE)
   
   if (any(predef %in% "coord")) {
-    dtC <- copy(dt)
+    dtC <- data.table::copy(dt)
     #dtC[, grep("_ID$|^FRAME$|POSITION.*[XYZT]", colnames(dtC), invert = T):=NULL]
     if ("SPOT_ID" %in% colnames(dt)) {
       dtC <- dtC[,c("TRACK_ID", "FRAME", "POSITION_X", 'POSITION_Y', 'POSITION_T', 'SPOT_ID')]
@@ -458,15 +459,15 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   } else dtC = NULL
   
   if (any(predef %in% "technical")) {
-    dtTh <- copy(dt)
+    dtTh <- data.table::copy(dt)
     dtTh[, grep(TechP, colnames(dtTh), invert = T):=NULL]
   } else dtTh = NULL
   if (any(predef %in% "morphological")) {
-    dtMh <- copy(dt)
+    dtMh <- data.table::copy(dt)
     dtMh[, grep(MorphP, colnames(dtMh), invert = T):=NULL]
   } else dtMh = NULL
   if (any(predef %in% "clust")) {
-    dtClst <- copy(dt)
+    dtClst <- data.table::copy(dt)
     #negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
     negpattern = combine_patterns(c(StdP, TechP, excld.pattern), logic = "OR")
     dtClst[, grep(negpattern, colnames(dtClst), invert = F):=NULL]
@@ -477,14 +478,14 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     }
   } else dtClst = NULL
   if (any(predef %in% "nontechnical")) {
-    dtNtch <- copy(dt)
+    dtNtch <- data.table::copy(dt)
     negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
     dtNtch[, grep(negpattern, colnames(dtNtch), invert = F):=NULL]
   } else dtNtch = NULL
   
   # Use inclusion patterns
   if (!is.null(incl.pattern)  & excld.pattern=="NO_EXCLUSION" ) {
-    dtF <- copy(dt)
+    dtF <- data.table::copy(dt)
     inclCols = grep(incl.pattern, colnames(dt), value = T, invert = F)
     # remove non numeric columns
     if (numerics) {
@@ -495,7 +496,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     dtF[,(colnames(dtF)[colnames(dtF) %nin% inclCols]):=NULL]
     
   } else if (is.null(incl.pattern) & !excld.pattern=="NO_EXCLUSION") {
-    dtF <- copy(dt)
+    dtF <- data.table::copy(dt)
     dtF[, grep(excld.pattern, colnames(dtF), invert = F):=NULL]
     if (numerics) {
       # get column names  of numerical columns
@@ -505,7 +506,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     }
     
   } else if (!is.null(incl.pattern) & !excld.pattern=="NO_EXCLUSION") {
-    dtF <- copy(dt)
+    dtF <- data.table::copy(dt)
     exclCols = grep(excld.pattern, colnames(dt), value = T, invert = F)
     inclCols = grep(incl.pattern, colnames(dt), value = T, invert = F)
     inclCols = inclCols[inclCols %nin% exclCols]
