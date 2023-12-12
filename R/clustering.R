@@ -82,7 +82,7 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
                                     reg.type = reg.type, threads = threads)
 
   } else if (type == "T") {
-    scemg <- ILoReg::RunParallelICP(object = scemg, k = 10,
+    scemg <- ILoReg::RunParallelICP(object = scemg, k = K,
                                     d = d, L = L,
                                     r = r, C = C,
                                     icp.batch.size = Inf,
@@ -98,14 +98,20 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
 
   scemg <- ILoReg::RunPCA(scemg, p=50, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
-
-
+  scemg <- ILoReg::RunUMAP(scemg)
+  scemg <- ILoReg::RunTSNE(scemg)
+  
+  # TODO: get UMAP and TSNE indices from scem and return them.
+  
   for (k in kILoReg) {
     scemg <- ILoReg::SelectKClusters(scemg, K=k)
     ilonm = paste0("IloRegK",k)
 
     ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
   }
+  
+  
+  
   return(ILoRegClsts)
 }
 
