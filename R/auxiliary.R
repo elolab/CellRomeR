@@ -47,3 +47,25 @@ combine_patterns <- function(patterns = "", logic = c("OR","AND"), custom = NULL
 
   print("No logic or custom found.")
 }
+
+#'
+#'
+#'
+excld.pattern.process <- function(excld.pattern, StdP = NULL) {
+  
+  # Parse exclusion pattern with  "standard_varnames" option
+  if (is.null(StdP)) {
+    StdP = "^LABEL|^label|ID$|ID[1-9]$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
+  }
+  
+  if (is.null(excld.pattern)) {
+    excld.pattern = "NO_EXCLUSION"
+  } else if (any(excld.pattern %in% c("standard_varnames","standard_variables","standard_columns") )) {
+    excld.pattern <- excld.pattern[-grep("standard_", excld.pattern)]
+    excld.pattern <- combine_patterns(c(excld.pattern,StdP), logic = "OR")
+  } else if (!is.null(excld.pattern)) {
+    excld.pattern = combine_patterns(excld.pattern)
+  } else excld.pattern = "NO_EXCLUSION"
+  return(excld.pattern)
+}
+
