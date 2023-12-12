@@ -141,7 +141,6 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
   ToChar = c("TRACK_ID","TRACK_ID2","SPOT_SOURCE_ID","SPOT_TARGET_ID","ID","SPOT_ID")
   Cols2Char =  ToChar[ToChar %in% names(dtIn) ]
   for (col in Cols2Char) data.table::set(dtIn, j = col, value = as.character(dtIn[[col]]))
-  print( data.frame(OldCols = colmnIn, NewCols = colmnOut, Order = colorder) )
 
   if (type == "S") {sort.spots(dtIn)}
   if (type == "T") {sort.tracks(dtIn)}
@@ -283,10 +282,8 @@ init.metadata <- function(MigrObj) {
   MigrObj@metadata[["S"]] <- spots.raw(MigrObj)[,1:e]
   MigrObj@metadata[["T"]] <- tracks.raw(MigrObj)[,1:2]
   MigrObj@metadata[["E"]] <- edges.raw(MigrObj)[,1:2]
-  cat("\nMetadata data.tables for spots, tracks, and edges was added to metadata slot.")
-  
+    
   return(MigrObj)
-  
 }
 
 

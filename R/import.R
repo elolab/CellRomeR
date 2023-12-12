@@ -1,8 +1,6 @@
 CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          experiment = "experiment", sample = "sample",
-                         condition = NULL, replicate = NULL, MigrDatObj = NULL,
-                         filtering = FALSE,
-                         normalize = FALSE,
+                         condition = "normal", replicate = NULL, MigrDatObj = NULL,
                          ...){
   if(!(file.exists(tmXML)))
     stop(sprintf("Couldn't find file %s", tmXML))
@@ -342,7 +340,6 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   MigrDatXML <- init.metadata(MigrDatXML)
   MigrDatXML <- init.clustering(MigrDatXML)
   
-  cat("\nImport took", (timdiff), "\n" )
   
   #### Return MigrDat object ####
   return(MigrDatXML)
