@@ -372,3 +372,165 @@ getlabels <- function(MigrObj,  dat.slot = dat.slot, type = type) {
   labels <- (slot(object = MigrObj, name = STE)[[dat.slot]])[[lbl.STE]]
   return(labels)
 }
+
+#### Data fetching functions ####
+#'
+#'
+getdt <- function(MigrObj, dat.slot = "raw", type = "STE") {
+  # arguments parsing
+  type = match.arg(type, c("S", "T", "E"))
+  # data.slot check!
+  # in use could be changed to return list without in. pre...
+  in.STE <- ifelse(type == "S", "in.spots", ifelse(type == "T", "in.tracks",  "in.edges"))
+  STE <- gsub("in.", "", in.STE)
+  dat.slot = match.arg(dat.slot, slots.in.use(MigrObj)[[in.STE]])
+  # if error here, it means, that the data is not available, please check the data.slot and type arguments!
+  # fetch data.table
+  dt <- copy(slot(object = MigrObj, name = STE)[[dat.slot]] )
+  return(dt)
+}
+
+#' #### slots in MigrObj in use function ####
+#'
+#' @export
+slots.in.use <- function(MigrDatObj) {
+  SlotZ = slot.usage(MigrDatObj = MigrDatObj)
+  in.spots = names(MigrDatObj@tracks)[SlotZ$spots]
+  in.tracks = names(MigrDatObj@tracks)[SlotZ$tracks]
+  in.edges = names(MigrDatObj@tracks)[SlotZ$edges]
+  in.roi_points = names(MigrDatObj@roi_points)[SlotZ$roi_points]
+  return(list(in.spots=in.spots, in.tracks=in.tracks, in.edges=in.edges, in.roi_points= in.roi_points))
+}
+
+#### MigrObj data auxiliary Functions ####
+#' #### slots in MigrObj not NULL function ####
+#'
+#'
+#'
+#' @export
+slot.usage <- function(MigrDatObj) {
+  sapply(slotNames(MigrDatObj), function(s) {
+    (!sapply(slot(MigrDatObj, s), FUN = is.null) )
+  } )
+}
+
+#### Function to fetch dt columns ####
+#' Works with some arguments only!
+#'
+#'
+#'
+#' @export
+dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "none", vars = NULL, numerics = F,
+                      StdP = NULL, TechP = NULL, MorphP = NULL) {
+  
+  if (length(vars)>0) {
+    colz <- vars[vars %in% colnames(dt)]
+    dt <-  dt[,..colz]
+    return(dt)
+  }
+  
+  # Parse exclusion pattern with  "standard_varnames" option
+  if (is.null(StdP)) {
+    StdP = "^LABEL|^label|ID$|ID[1-9]$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
+  }
+  # predefined column group patterns
+  if (is.null(TechP)) {
+    TechP = "CH[1-9]$"
+  }
+  if (is.null(MorphP)) {
+    # create check for dt type STE.
+    MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
+  }
+  
+  # Process exclusion patterns
+  excld.pattern <- excld.pattern.process(excld.pattern, StdP = StdP)
+  
+  predef = match.arg(predef, c("coord","technical", "morphological", "clust", "nontechnical", "none"), several.ok = TRUE)
+  
+  if (any(predef %in% "coord")) {
+    dtC <- copy(dt)
+    #dtC[, grep("_ID$|^FRAME$|POSITION.*[XYZT]", colnames(dtC), invert = T):=NULL]
+    if ("SPOT_ID" %in% colnames(dt)) {
+      dtC <- dtC[,c("TRACK_ID", "FRAME", "POSITION_X", 'POSITION_Y', 'POSITION_T', 'SPOT_ID')]
+    }
+    if ("TRACK_X_LOCATION" %in% colnames(dt)) {
+      dtC <- dtC[,c("LABEL", "TRACK_X_LOCATION", "TRACK_Y_LOCATION", "TRACK_Z_LOCATION")]
+    }
+    if ("EDGE_ID" %in% colnames(dt)) {
+      dtC <- dtC[,c("TRACK_ID", "EDGE_TIME", "EDGE_X_LOCATION", "EDGE_Y_LOCATION","EDGE_Z_LOCATION","EDGE_ID")]
+    }
+  } else dtC = NULL
+  
+  if (any(predef %in% "technical")) {
+    dtTh <- copy(dt)
+    dtTh[, grep(TechP, colnames(dtTh), invert = T):=NULL]
+  } else dtTh = NULL
+  if (any(predef %in% "morphological")) {
+    dtMh <- copy(dt)
+    dtMh[, grep(MorphP, colnames(dtMh), invert = T):=NULL]
+  } else dtMh = NULL
+  if (any(predef %in% "clust")) {
+    dtClst <- copy(dt)
+    #negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
+    negpattern = combine_patterns(c(StdP, TechP, excld.pattern), logic = "OR")
+    dtClst[, grep(negpattern, colnames(dtClst), invert = F):=NULL]
+    # keep just numeric columns
+    num_cols <- colnames(dtClst)[sapply(dtClst, is.numeric)]
+    if (length(num_cols) < dim(dtClst)[2]) {
+      dtClst[,!num_cols:=NULL]
+    }
+  } else dtClst = NULL
+  if (any(predef %in% "nontechnical")) {
+    dtNtch <- copy(dt)
+    negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
+    dtNtch[, grep(negpattern, colnames(dtNtch), invert = F):=NULL]
+  } else dtNtch = NULL
+  
+  # Use inclusion patterns
+  if (!is.null(incl.pattern)  & excld.pattern=="NO_EXCLUSION" ) {
+    dtF <- copy(dt)
+    inclCols = grep(incl.pattern, colnames(dt), value = T, invert = F)
+    # remove non numeric columns
+    if (numerics) {
+      # get column names  of numerical columns
+      num_cols <- colnames(dt)[sapply(dt, is.numeric)]
+      inclCols = inclCols[inclCols %in% num_cols]
+    }
+    dtF[,(colnames(dtF)[colnames(dtF) %nin% inclCols]):=NULL]
+    
+  } else if (is.null(incl.pattern) & !excld.pattern=="NO_EXCLUSION") {
+    dtF <- copy(dt)
+    dtF[, grep(excld.pattern, colnames(dtF), invert = F):=NULL]
+    if (numerics) {
+      # get column names  of numerical columns
+      num_cols <- colnames(dtF)[sapply(dtF, is.numeric)]
+      num_cols = combine_patterns(c(num_cols), logic = "OR")
+      dtF[, grep(num_cols, colnames(dtF), invert = T):=NULL]
+    }
+    
+  } else if (!is.null(incl.pattern) & !excld.pattern=="NO_EXCLUSION") {
+    dtF <- copy(dt)
+    exclCols = grep(excld.pattern, colnames(dt), value = T, invert = F)
+    inclCols = grep(incl.pattern, colnames(dt), value = T, invert = F)
+    inclCols = inclCols[inclCols %nin% exclCols]
+    # remove non-numeric columns
+    if (numerics) {
+      # get column names  of numerical columns
+      num_cols <- colnames(dt)[sapply(dt, is.numeric)]
+      inclCols = inclCols[inclCols %in% num_cols]
+      dtF <- dtF[,..inclCols]
+    }
+    #inclCols = combine_patterns(c(inclCols), logic = "OR", exacts = T)
+    #dtF[, grep(inclCols, colnames(dtF), invert = T):=NULL]
+  } else dtF = NULL
+  
+  lst = list(dtF = dtF, dtC = dtC, dtTh = dtTh, dtMh = dtMh, dtClst = dtClst, dtNtch = dtNtch)
+  lst = lst[!sapply(lst, is.null)]
+  
+  if (length(lst) == 1) {
+    return(lst[[1]])
+  }
+  return(lst)
+}
+
+
