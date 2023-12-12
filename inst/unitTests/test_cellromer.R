@@ -25,3 +25,19 @@ test.loading_xml <- function(){
                            condition = "Test", MigrDatObj = NULL)
   RUnit::checkTrue(TRUE)
 }
+
+test.clustering <- function(){
+  migrobj <- get_pkg_function(import_XML)(tmXML =
+                                         file.path(
+                                           find_extdata_dir(),
+                                           "ExampleTrackMateData.xml"),
+                           dataset = "Z0_T00_C1", 
+                           experiment = "ExpT", sample = "S-test",
+                           condition = "Test", MigrDatObj = NULL)
+  get_pkg_function(CellRomeR.clustering)(MigrObj = migrobj,  dat.slot = "raw", type = "S",
+                                incl.pattern = c("CH1"), uniq = "CH1_15",
+    kILoReg = 15,
+    
+    scale = TRUE, threads = 0)
+    RUnit::checkTrue(TRUE)
+}
