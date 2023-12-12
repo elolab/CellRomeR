@@ -19,9 +19,9 @@ test.loading_xml <- function(){
   get_pkg_function(CellRomeR.import_XML)(tmXML =
                                          file.path(
                                            find_extdata_dir(),
-                                           "LabelImage.xml"),
+                                           "ExampleTrackMateData.xml"),
                            dataset = "Z0_T00_C1", 
                            experiment = "ExpT", sample = "S-test",
-                           condition = "Test", MigrDatObj = NULL, normalize = F)
+                           condition = "Test", MigrDatObj = NULL)
   RUnit::checkTrue(TRUE)
 }

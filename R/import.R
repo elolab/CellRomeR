@@ -79,21 +79,6 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
     return(TRACK_IDs_SE)
   }
   
-  #### argument steps ####
-  ## For testing
-  if (!exists("condition")) {
-    condition = "Normal"
-  }
-  ## testing data
-  if (is.null(tmXML)) {
-    tmXML = "../tmp/data/R1_cellmigrationR1-Position60_XY1562686156_Z0_T00_C1.xml"
-  }
-  
-  if (is.null(dataset)) {
-    # dataset = parse_datanames(tmXML)
-    dataset = "DataX"
-  }
-  
   if (is.null(MigrDatObj)) {
     MigrDatXML = MigrDat_newobj(dataset = dataset,
                                 experiment = experiment, sample = sample,
@@ -318,21 +303,6 @@ CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   MigrDatXML <- speed2spots.raw(MigrDatXML, NAs0 = TRUE)
   
   # Filtering
-  if (filtering) {
-    #tm_tracks = MigrDatXML@metadata$track_filter
-    #MigrDatXML <- filter.tracks(MigrDatXML, filter = TRACK_ID %in% tm_tracks, track.slot = "raw")
-    #cat("Data filtered with TrackMate filter!")
-    #MigrDatXML@metadata$filtering = "TrackMate"
-    cat("Filtering with TrackMate filter not implemented yet!")
-    MigrDatXML@metadata$filtering = "unfiltered"
-    
-  } else {MigrDatXML@metadata$filtering = "unfiltered"}
-  
-  # zscore normalization is done by default to each data table
-  if (normalize) {
-    MigrDatXML <- MigrDat.normalize(MigrDat = MigrDatXML, NormMeth = "zscore")
-  }
-  
   # Timing
   timdiff = (Sys.time() - strt)
   MigrDatXML@metadata$importduration = timdiff
