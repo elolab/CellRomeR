@@ -16,7 +16,7 @@ get_pkg_function <- function(funcname)
 
 ## TrackMate XML import
 test.loading_xml <- function(){
-  get_pkg_function(CellRomeR.import_XML)(tmXML =
+  get_pkg_function(import_XML)(tmXML =
                                          file.path(
                                            find_extdata_dir(),
                                            "ExampleTrackMateData.xml"),

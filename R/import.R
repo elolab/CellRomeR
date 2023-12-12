@@ -1,4 +1,4 @@
-CellRomeR.import_XML <- function(tmXML, dataset = "MigrDatTestXML",
+import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          experiment = "experiment", sample = "sample",
                          condition = "normal", replicate = NULL, MigrDatObj = NULL,
                          ...){
