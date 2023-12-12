@@ -1,3 +1,4 @@
 export(import_XML)
 export(clustering)
+S3method(plot, MigrDat)
 importFrom(data.table, ":=")
