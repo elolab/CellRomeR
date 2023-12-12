@@ -1,7 +1,6 @@
 import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          experiment = "experiment", sample = "sample",
-                         condition = "normal", replicate = NULL, MigrDatObj = NULL,
-                         ...){
+                         condition = "normal", replicate = NULL, MigrDatObj = NULL){
   if(!(file.exists(tmXML)))
     stop(sprintf("Couldn't find file %s", tmXML))
   ### Timing
@@ -83,7 +82,7 @@ import_XML <- function(tmXML, dataset = "MigrDatTestXML",
     MigrDatXML = MigrDat_newobj(dataset = dataset,
                                 experiment = experiment, sample = sample,
                                 data_type = "TMxml",
-                                condition = condition, replicate = replicate,...)
+                                condition = condition, replicate = replicate)
     # MigrDatXML = MigrDat_newobj(dataset = dataset, Data_type = "TMxml",...)
   } else MigrDatXML = MigrDatObj
   
