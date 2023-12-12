@@ -1,23 +1,27 @@
 #### Main clustering function ####
 
-CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
-                              uniq = "base",
-                              kILoReg = 0,
-                              predef =  "none",
-                              vars = NULL, incl.pattern = NULL,
-                              excld.pattern = NULL,
-                              scale = FALSE, 
-                              set.default = TRUE, threads = 0,...) {
+clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
+                       uniq = "base",
+                       # a numeric vector of k's
+                       # iloreg will be invoked for each of its elements.
+                       kILoReg = c(8),
+                       predef =  c("none", "technical", "morphological", "clust"),
+                       vars = NULL, incl.pattern = NULL,
+                       excld.pattern = NULL,
+                       scale = FALSE, 
+                       set.default = TRUE, threads = 0,...) {
   #startTime <- Sys.time()
-  
-  stopifnot(kILoReg > 0)
+  # Raise error on
+  # - empty kILoReg, or
+  # - any 0 or less occuring in kIloReg
+  stopifnot(!any(kILoReg <= 0))
 
   # set thread count
   if (threads==0) {
     threads=parallel::detectCores()
   }
 
-  predef = match.arg(predef, c("none", "technical", "morphological", "clust"), several.ok = FALSE)
+  predef <- match.arg(predef)
 
   # standard variable names we are not interested in
   StdP = Std.pattern(MigrObj)

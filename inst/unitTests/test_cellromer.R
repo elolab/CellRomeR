@@ -34,9 +34,9 @@ test.clustering <- function(){
                            dataset = "Z0_T00_C1", 
                            experiment = "ExpT", sample = "S-test",
                            condition = "Test", MigrDatObj = NULL)
-  get_pkg_function(CellRomeR.clustering)(MigrObj = migrobj,  dat.slot = "raw", type = "S",
+  get_pkg_function(clustering)(MigrObj = migrobj,  dat.slot = "raw", type = "S",
                                 incl.pattern = c("CH1"), uniq = "CH1_15",
-    kILoReg = 15,
+    kILoReg = 1,
     
     scale = TRUE, threads = 0)
     RUnit::checkTrue(TRUE)
