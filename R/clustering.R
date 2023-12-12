@@ -1,14 +1,16 @@
 #### Main clustering function ####
 
-IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
+CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
                               uniq = "base",
-                              kmeans = 0, khclust = 0, kILoReg = 0,
+                              kILoReg = 0,
                               predef =  "none",
                               vars = NULL, incl.pattern = NULL,
                               excld.pattern = NULL,
-                              scale = FALSE, center = FALSE,
+                              scale = FALSE, 
                               set.default = TRUE, threads = 0,...) {
-  startTime <- Sys.time()
+  #startTime <- Sys.time()
+  
+  stopifnot(kILoReg > 0)
 
   # set thread count
   if (threads==0) {
@@ -25,57 +27,25 @@ IRmigr.clustering <- function(MigrObj, dat.slot = "scaled", type = "STE",
                     vars = vars, incl.pattern = incl.pattern,
                     excld.pattern = excld.pattern, numerics = TRUE)
 
-  # kmean
-  if (kmeans[1]>1) {
-    kmeansclsts <- IRMigr.kmeansX(data, kmeans = kmeans, scale = scale)
-
-    for (nm in names(kmeansclsts)) {
-      kmeansname = paste0(nm, "_", type,"_",uniq)
-      MigrObj@clustering[[type]][[kmeansname]] <- kmeansclsts[[nm]]
-    }
-    if (set.default) {
-      MigrObj@clustering[[type]][["kmeans"]] <- kmeansclsts[[nm]]
-      default.kmeans(MigrObj)[[type]] <- kmeansname
-    }
-
-  } else kmeansclsts = list()
-
-  # Hierarchical hclust
-  if (khclust[1]>1) {
-    hclusts <- IRMigr.hclust(data, khclust = khclust, scale = scale)
-    for (nm in names(hclusts)) {
-      hclustname = paste0(nm, "_", type,"_",uniq)
-      MigrObj@clustering[[type]][[hclustname]] <- hclusts[[nm]]
-    }
-    if (set.default) {
-      MigrObj@clustering[[type]][["hclusts"]] <- hclusts[[nm]]
-      default.kmeans(MigrObj)[[type]] <- hclustname
-      #
-    }
-  } else hclusts = list()
-
-
   # ILoReg
-  if (kILoReg[1]>1) {
-    mtx = as.matrix(data)
-    rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
-    ILoRegclsts <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+  mtx = as.matrix(data)
+  rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
+  ILoRegclsts <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
 
-    for (nm in names(ILoRegclsts)) {
-      ILoRegname = paste0(nm, "_", type,"_",uniq)
-      MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegclsts[[nm]]
-    }
-    if (set.default) {
-      MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegclsts[[nm]]
-      default.kmeans(MigrObj)[[type]] <- ILoRegname
-    }
-  } else ILoRegclsts = list()
+  for (nm in names(ILoRegclsts)) {
+    ILoRegname = paste0(nm, "_", type,"_",uniq)
+    MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegclsts[[nm]]
+  }
+  if (set.default) {
+    MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegclsts[[nm]]
+    default.kmeans(MigrObj)[[type]] <- ILoRegname
+  }
+    
+  # cat("\nClustering results were stored with ", uniq," identifier in clusterings slot.")
 
-  cat("\nClustering results were stored with ", uniq," identifier in clusterings slot.")
-
-  timing=Sys.time() - startTime
-  cat("\nClustering took: \n" )
-  cat(Sys.time() - startTime,"\n\n")
+  #timing=Sys.time() - startTime
+  #cat("\nClustering took: \n" )
+  #cat(Sys.time() - startTime,"\n\n")
   return(MigrObj)
 
 }

@@ -1,2 +1,3 @@
 export(import_XML)
+export(CellRomeR.clustering)
 importFrom(data.table, ":=")
