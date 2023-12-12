@@ -87,7 +87,7 @@ IRmigr.boxplot <- function(MigrObj, dat.slot = "raw", type = "STE", log2 = TRUE,
   # data
   Bxplot = suppressWarnings(
     ggplot2::ggplot(reshape2::melt(data), ggplot2::aes(x=variable, y=value, group=variable)) +
-      ggplot2::geom_boxplot(aes(fill=variable)) +
+      ggplot2::geom_boxplot(ggplot2::aes(fill=variable)) +
       ggplot2::theme(axis.text.x=ggplot2::element_text(angle=60,hjust=1)) +
       if (log2 == TRUE) {ggplot2::scale_y_continuous(trans='log2')} )
   if (!legend) {
@@ -336,7 +336,7 @@ UMAP2DplotF <- function(dats = fact.spots, x = "x", palette = colrz.clust, filen
       #scale_color_gradient2(low = "white", mid = "darkorange", high = "black") +
       ggplot2::scale_color_manual(values = palette) +
       ggplot2::theme(legend.position = "bottom",
-            legend.text=element_text(size=16) )
+            legend.text=ggplot2::element_text(size=16) )
   )
   if (!is.null(filename)) {
     dev.off()

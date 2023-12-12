@@ -1,4 +1,3 @@
-
 #### data wrangling functions ####
 
 #' Need conversion table/system for variables so that all objects will have same basic features
@@ -28,19 +27,19 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
 
   sort.spots <- function(dt.spots) {
     dt.spots[, SPOT_ID := as.numeric(SPOT_ID)]
-    setorder(dt.spots, TRACK_ID, FRAME) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
+    data.table::setorder(dt.spots, TRACK_ID, FRAME) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
     dt.spots[, SPOT_ID := as.character(SPOT_ID)]
   }
 
   sort.edges <- function(dt.edges) {
     dt.edges[, SPOT_SOURCE_ID := as.numeric(SPOT_SOURCE_ID)]
-    setorder(dt.edges, TRACK_ID, SPOT_SOURCE_ID) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
+    data.table::setorder(dt.edges, TRACK_ID, SPOT_SOURCE_ID) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
     dt.edges[, SPOT_SOURCE_ID := as.character(SPOT_SOURCE_ID)]
   }
 
   sort.tracks <- function(dt.tracks) {
     dt.tracks[, TRACK_ID := as.numeric(TRACK_ID)]
-    setorder(dt.tracks, TRACK_ID)
+    data.table::setorder(dt.tracks, TRACK_ID)
     dt.tracks[, TRACK_ID := as.character(TRACK_ID)]
   }
   # sort.tracks <- function(dt.tracks) {
@@ -130,10 +129,10 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
   colnames(dtIn) = colmnOut
   # Standard ordering
   standard_cols = names(stdsX)[names(stdsX) %in% colmnOut]
-  nonstandard_cols = colmnOut[colmnOut %nin% names(stdsX)]
+  nonstandard_cols = colmnOut[! (colmnOut %in%  names(stdsX))]
   colorder = c(standard_cols, nonstandard_cols)
 
-  setcolorder(dtIn, colorder)
+  data.table::setcolorder(dtIn, colorder)
 
   # Convert types to what they look like.
   dtIn <- type.convert(dtIn, as.is = TRUE)
@@ -141,8 +140,7 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
   # set some ID-numbers to characters for matching and not confusing to indices
   ToChar = c("TRACK_ID","TRACK_ID2","SPOT_SOURCE_ID","SPOT_TARGET_ID","ID","SPOT_ID")
   Cols2Char =  ToChar[ToChar %in% names(dtIn) ]
-  for (col in Cols2Char) set(dtIn, j = col, value = as.character(dtIn[[col]]))
-  print( data.frame(OldCols = colmnIn, NewCols = colmnOut, Order = colorder) )
+  for (col in Cols2Char) data.table::set(dtIn, j = col, value = as.character(dtIn[[col]]))
 
   if (type == "S") {sort.spots(dtIn)}
   if (type == "T") {sort.tracks(dtIn)}
@@ -169,14 +167,14 @@ track_ids4spotsM <- function(dtExml,dtSxml) {
   # Using matching
   colsE = c("TRACK_ID","SPOT_SOURCE_ID","SPOT_TARGET_ID")
   es_ss_ts = dtExml[, .SD , .SDcols=colsE]
-  for (col in colsE[2:3]) set(es_ss_ts, j = col, value = as.character(es_ss_ts[[col]]))
-  es_ss_tsA <- rbindlist(list(es_ss_ts, list("ninTracks", 1e5, 1e5)  ))
+  for (col in colsE[2:3]) data.table::set(es_ss_ts, j = col, value = as.character(es_ss_ts[[col]]))
+  es_ss_tsA <- data.table::rbindlist(list(es_ss_ts, list("ninTracks", 1e5, 1e5)  ))
   es_ss_tsA[.N]
   nomatchIdx = (dim(es_ss_tsA)[1])
   mch = dtSxml[["ID"]]
   pos1 = match(mch, es_ss_tsA[["SPOT_SOURCE_ID"]], nomatch = nomatchIdx)
   pos2 = match(mch, es_ss_tsA[["SPOT_TARGET_ID"]], nomatch = nomatchIdx)
-  idx = data.table(pos1 = pos1, pos2 = pos2)[, min:= do.call(pmin, .SD)][,min]
+  idx = data.table::data.table(pos1 = pos1, pos2 = pos2)[, min:= do.call(pmin, .SD)][,min]
   track_ids = es_ss_tsA[["TRACK_ID"]][idx]
 
   if (any(is.na(track_ids))) {
@@ -211,7 +209,7 @@ getROIpoints_TMxml <- function(TMxml, IDs = NULL) {
 
   ## Ids for the coords
   if (is.null(IDs)) {
-    IDs = xpathSApply(TMxml, "//Spot", xmlGetAttr, "name")
+    IDs = XML::xpathSApply(TMxml, "//Spot", XML::xmlGetAttr, "name")
   }
 
 
@@ -250,8 +248,8 @@ getROIpoints_TMxml <- function(TMxml, IDs = NULL) {
 #' @export
 speed2spots.raw <- function(MigrDat, NAs0 = TRUE) {
 
-  spots <- copy(spots.raw(MigrDat))
-  edges <- copy(edges.raw(MigrDat))
+  spots <- data.table::copy(spots.raw(MigrDat))
+  edges <- data.table::copy(edges.raw(MigrDat))
 
   spots <- spots[edges, SPEED := i.SPEED, on = c("SPOT_ID" = "SPOT_SOURCE_ID")]
   spots <- spots[edges, SPEED := i.SPEED, on = c("SPOT_ID" = "SPOT_TARGET_ID")]
@@ -284,10 +282,8 @@ init.metadata <- function(MigrObj) {
   MigrObj@metadata[["S"]] <- spots.raw(MigrObj)[,1:e]
   MigrObj@metadata[["T"]] <- tracks.raw(MigrObj)[,1:2]
   MigrObj@metadata[["E"]] <- edges.raw(MigrObj)[,1:2]
-  cat("\nMetadata data.tables for spots, tracks, and edges was added to metadata slot.")
-  
+    
   return(MigrObj)
-  
 }
 
 

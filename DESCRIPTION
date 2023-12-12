@@ -6,7 +6,7 @@ Author: MBC
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-Depends: XML,xml2,ggplot2,pals,GGally,reshape2,RColorBrewer,data.table,XML,xml2,fastcluster,ILoReg,SingleCellExperiment
+Imports: XML,xml2,ggplot2,pals,GGally,reshape2,RColorBrewer,data.table,fastcluster,ILoReg,SingleCellExperiment
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
