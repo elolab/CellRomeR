@@ -1,6 +1,6 @@
 # Plots violin plot of features grouped by clusters
 
-plotViolin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
+plot_violin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
   violin_data <- data.frame(
     cluster = clusterings(MigrDatXML)[[type]][[clusterType]],
     feature = getdt(MigrObj, dat.slot, type)[[feature]]
@@ -15,7 +15,7 @@ plotViolin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, cl
 }
 
 # Plots violin plot of features grouped by clusters horizontally
-plotHviolin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
+plot_hviolin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
   violin_data <- data.frame(
     cluster = clusterings(MigrDatXML)[[type]][[clusterType]],
     feature = getdt(MigrObj, dat.slot, type)[[feature]]

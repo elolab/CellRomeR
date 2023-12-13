@@ -1,4 +1,6 @@
 export(CellRomeR.import_XML)
 export(clustering)
 export(tSNE_plot)
+export(plot_violin)
+export(plot_hviolin)
 importFrom(data.table, ":=")
