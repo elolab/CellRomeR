@@ -1,4 +1,5 @@
 export(import_XML)
 export(clustering)
+export(plot_heatmap)
 S3method(plot, MigrDat)
 importFrom(data.table, ":=")
