@@ -1,7 +1,7 @@
 
 plot_heatmap <- function(x) {
   
-  if (is.null(x@clustering$S$ILoRegclusters)) {
+  if (length(unique(x@clustering$S$ILoRegclusters))==1) {
     stop("No clustering data available. Please run the clustering first.")
   }
   
