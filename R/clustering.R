@@ -30,7 +30,18 @@ CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
   # ILoReg
   mtx = as.matrix(data)
   rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
-  ILoRegclsts <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+  scemg <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+
+  ILoRegClsts = list()
+  for (k in kILoReg) {
+    scemg <- ILoReg::SelectKClusters(scemg, K=k)
+    ilonm = paste0("IloRegK",k)
+    ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
+  }
+  
+  l <- reducedDims(scemg)
+  MigrObj@dimreductions[[type]][[paste(uniq, "_UMAP")]] <- l$UMAP
+  MigrObj@dimreductions[[type]][[paste(uniq, "_TSNE")]] <- l$TSNE
 
   for (nm in names(ILoRegclsts)) {
     ILoRegname = paste0(nm, "_", type,"_",uniq)
@@ -101,18 +112,8 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
   scemg <- ILoReg::RunUMAP(scemg)
   scemg <- ILoReg::RunTSNE(scemg)
   
-  # TODO: get UMAP and TSNE indices from scem and return them.
-  
-  for (k in kILoReg) {
-    scemg <- ILoReg::SelectKClusters(scemg, K=k)
-    ilonm = paste0("IloRegK",k)
+  return (scemg)
 
-    ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
-  }
-  
-  
-  
-  return(ILoRegClsts)
 }
 
 IRMigr.kmeansX <- function(mtx, kmeans, scale = FALSE) {
