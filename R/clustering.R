@@ -1,6 +1,6 @@
 #### Main clustering function ####
 
-CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
+clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
                               uniq = "base",
                               kILoReg = 0,
                               predef =  "none",
@@ -8,8 +8,6 @@ CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
                               excld.pattern = NULL,
                               scale = FALSE, 
                               set.default = TRUE, threads = 0,...) {
-  #startTime <- Sys.time()
-  
   stopifnot(kILoReg > 0)
 
   # set thread count
@@ -39,24 +37,19 @@ CellRomeR.clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
     ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
   }
   
-  l <- reducedDims(scemg)
+  l <- SingleCellExperiment::reducedDims(scemg)
   MigrObj@dimreductions[[type]][[paste(uniq, "_UMAP")]] <- l$UMAP
   MigrObj@dimreductions[[type]][[paste(uniq, "_TSNE")]] <- l$TSNE
 
-  for (nm in names(ILoRegclsts)) {
+  for (nm in names(ILoRegClsts)) {
     ILoRegname = paste0(nm, "_", type,"_",uniq)
-    MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegclsts[[nm]]
+    MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegClsts[[nm]]
   }
   if (set.default) {
-    MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegclsts[[nm]]
+    MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegClsts[[nm]]
     default.kmeans(MigrObj)[[type]] <- ILoRegname
   }
     
-  # cat("\nClustering results were stored with ", uniq," identifier in clusterings slot.")
-
-  #timing=Sys.time() - startTime
-  #cat("\nClustering took: \n" )
-  #cat(Sys.time() - startTime,"\n\n")
   return(MigrObj)
 
 }
