@@ -31,10 +31,7 @@ labels you can give to describe the data. It doesn't do much useful at the momen
 }
 \examples{
 ## Import the "file_path.xml" file
-MigrObject <- CellRomeR::import_XML(tmXML = "file_path.xml", 
-                           dataset = "Dataset1", 
-                           experiment = "ExpT", sample = "S-test",
-                           condition = "Test", MigrDatObj = NULL)
+\dontrun{MigrObject <- import_XML(tmXML = "file_path.xml")}
 }
 \keyword{file}
 
