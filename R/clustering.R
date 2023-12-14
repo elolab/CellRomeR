@@ -1,20 +1,14 @@
 #### Main clustering function ####
 
 clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
-                       uniq = "base",
-                       # a numeric vector of k's
-                       # iloreg will be invoked for each of its elements.
-                       kILoReg = c(8),
-                       predef =  c("none", "technical", "morphological", "clust"),
-                       vars = NULL, incl.pattern = NULL,
-                       excld.pattern = NULL,
-                       scale = FALSE, 
-                       set.default = TRUE, threads = 0,...) {
-  #startTime <- Sys.time()
-  # Raise error on
-  # - empty kILoReg, or
-  # - any 0 or less occuring in kIloReg
-  stopifnot(!any(kILoReg <= 0))
+                              uniq = "base",
+                              kILoReg = 0,
+                              predef =  "none",
+                              vars = NULL, incl.pattern = NULL,
+                              excld.pattern = NULL,
+                              scale = FALSE, 
+                              set.default = TRUE, threads = 0,...) {
+  stopifnot(kILoReg > 0)
 
   # set thread count
   if (threads==0) {
@@ -34,22 +28,28 @@ clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
   # ILoReg
   mtx = as.matrix(data)
   rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
-  ILoRegclsts <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+  scemg <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
 
-  for (nm in names(ILoRegclsts)) {
+  ILoRegClsts = list()
+  for (k in kILoReg) {
+    scemg <- ILoReg::SelectKClusters(scemg, K=k)
+    ilonm = paste0("IloRegK",k)
+    ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
+  }
+  
+  l <- SingleCellExperiment::reducedDims(scemg)
+  MigrObj@dimreductions[[type]][[paste(uniq, "_UMAP")]] <- l$UMAP
+  MigrObj@dimreductions[[type]][[paste(uniq, "_TSNE")]] <- l$TSNE
+
+  for (nm in names(ILoRegClsts)) {
     ILoRegname = paste0(nm, "_", type,"_",uniq)
-    MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegclsts[[nm]]
+    MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegClsts[[nm]]
   }
   if (set.default) {
-    MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegclsts[[nm]]
+    MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegClsts[[nm]]
     default.kmeans(MigrObj)[[type]] <- ILoRegname
   }
     
-  # cat("\nClustering results were stored with ", uniq," identifier in clusterings slot.")
-
-  #timing=Sys.time() - startTime
-  #cat("\nClustering took: \n" )
-  #cat(Sys.time() - startTime,"\n\n")
   return(MigrObj)
 
 }
@@ -86,7 +86,7 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
                                     reg.type = reg.type, threads = threads)
 
   } else if (type == "T") {
-    scemg <- ILoReg::RunParallelICP(object = scemg, k = 10,
+    scemg <- ILoReg::RunParallelICP(object = scemg, k = K,
                                     d = d, L = L,
                                     r = r, C = C,
                                     icp.batch.size = Inf,
@@ -102,15 +102,11 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
 
   scemg <- ILoReg::RunPCA(scemg, p=50, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
+  scemg <- ILoReg::RunUMAP(scemg)
+  scemg <- ILoReg::RunTSNE(scemg)
+  
+  return (scemg)
 
-
-  for (k in kILoReg) {
-    scemg <- ILoReg::SelectKClusters(scemg, K=k)
-    ilonm = paste0("IloRegK",k)
-
-    ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
-  }
-  return(ILoRegClsts)
 }
 
 IRMigr.kmeansX <- function(mtx, kmeans, scale = FALSE) {
