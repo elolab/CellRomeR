@@ -15,7 +15,7 @@ clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
     threads=parallel::detectCores()
   }
 
-  predef = match.arg(predef, c("none", "technical", "morphological", "clust"), several.ok = FALSE)
+  predef <- match.arg(predef)
 
   # standard variable names we are not interested in
   StdP = Std.pattern(MigrObj)
