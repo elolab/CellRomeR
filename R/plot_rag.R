@@ -1,4 +1,4 @@
-rag_plot <- function(MigrObj, clusterType = "ILoRegclusters") {
+plot_rag <- function(MigrObj, clusterType = "ILoRegclusters") {
   
   type = "S"
   dat = spots.raw(MigrObj) 

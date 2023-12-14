@@ -1,4 +1,4 @@
-tSNE_plot <- function(MigrObj, type, uniq, colors) {
+plot_tsne <- function(MigrObj, type, uniq, colors) {
   clusters <- clusterings(MigrDatXML)[["S"]]$ILoRegclusters
   tsne <- MigrDatXML@dimreductions[["S"]][[paste("CH1_15", "_TSNE")]] 
   tsne.x = tsne[, 1]
