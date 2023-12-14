@@ -1,30 +1,17 @@
 # Plots violin plot of features grouped by clusters
 
-plot_violin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
+plot_violin <- function(MigrObj, feature = NULL, data.slot = "raw", type = "S", clusterType = "ILoRegclusters") {
+  if (is.null(feature)) {
+    stop("Please specify a feature to plot")
+  }
+  
   violin_data <- data.frame(
     cluster = clusterings(MigrObj)[[type]][[clusterType]],
-    feature = getdt(MigrObj, dat.slot, type)[[feature]]
-
+    feature = getdt(MigrObj, data.slot, type)[[feature]]
   )
   
-  
-  ggplot(violin_data, aes(x=cluster, y=feature, fill=cluster)) +
-    geom_violin() + theme_classic() + labs(y=feature)
-  
+  ggplot2::ggplot(violin_data, ggplot2::aes(x=cluster, y=feature, fill=cluster)) +
+    ggplot2::geom_violin() + ggplot2::theme_classic() + ggplot2::labs(y=feature)
   
 }
 
-# Plots violin plot of features grouped by clusters horizontally
-plot_hviolin <- function(MigrObj, dat.slot = NULL, feature = NULL, type = NULL, clusterType = "ILoRegclusters") {
-  violin_data <- data.frame(
-    cluster = clusterings(MigrObj)[[type]][[clusterType]],
-    feature = getdt(MigrObj, dat.slot, type)[[feature]]
-    
-  )
-  
-  
-  ggplot(violin_data, aes(x=cluster, y=feature, fill=cluster)) +
-    geom_violin() + theme_classic() + coord_flip() + labs(y=feature)
-  
-  
-}
