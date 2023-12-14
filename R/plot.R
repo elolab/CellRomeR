@@ -1,15 +1,15 @@
-plot.MigrDat <- function(MigrObj, ...) {
+plot.MigrDat <- function(x, ...) {
   
-  n <- length(unique(MigrObj@clustering$S$ILoRegclusters))
-  colors <- colorRampPalette(c("#3C95AC","#E756A7","#FFCB8A"))(n)[MigrObj@clustering$S$ILoRegclusters]
+  n <- length(unique(x@clustering$S$ILoRegclusters))
+  colors <- colorRampPalette(c("#3C95AC","#E756A7","#FFCB8A"))(n)[x@clustering$S$ILoRegclusters]
   
-  x <- MigrObj@spots$raw$POSITION_X
-  y <- MigrObj@spots$raw$POSITION_Y
+  x <- x@spots$raw$POSITION_X
+  y <- x@spots$raw$POSITION_Y
   plot(x, y, pch=NA, ...)
   
-  ord <- order(MigrObj@spots$raw$POSITION_T, decreasing=FALSE)
-  for(track in unique(MigrObj@spots$raw$TRACK_ID)) {
-    sel <- which(MigrObj@spots$raw$TRACK_ID[ord]==track)
+  ord <- order(x@spots$raw$POSITION_T, decreasing=FALSE)
+  for(track in unique(x@spots$raw$TRACK_ID)) {
+    sel <- which(x@spots$raw$TRACK_ID[ord]==track)
     lines(x[ord][sel], y[ord][sel], col="lightgrey")
   }
   
