@@ -309,7 +309,7 @@ init.clustering <- function(MigrObj) {
   MigrObj@clustering[["E"]][["ILoRegclusters"]] <- 0
   MigrObj@clustering[["E"]][["Seurclusters"]] <- 0
   
-  cat("\nClustering data.tables for spots, tracks, and edges was added to clustering slot.\n")
+  #cat("\nClustering data.tables for spots, tracks, and edges was added to clustering slot.\n")
   return(MigrObj)
 }
 
