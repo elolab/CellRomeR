@@ -5,8 +5,7 @@ Version: 0.1.0
 Author: Iivari Kleino, Laura L. Elo
 Maintainer: MBC <mbc@utu.fi>
 Description: Phenotypic clustering of cells based on their morphological and motility features from microscopy images. Utilizing advanced machine learning techniques and building on an iterative clustering projection method, CellRomeR offers a new approach to identify heterogeneity in cell populations.
-Imports: XML,xml2,ggplot2,pals,data.table,fastcluster,ILoReg,SingleCellExperiment
-Suggests: RUnit
+Imports: XML,xml2,ggplot2,pals,data.table,fastcluster,ILoReg,SingleCellExperiment,methods
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
