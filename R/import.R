@@ -17,7 +17,7 @@ import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   
   #### auxiliary functions ####
   # Get feature names from retrieved XML feature list
-  getFeatNames <- function(xmllist = XML::featsXML) {
+  getFeatNames <- function(xmllist) {
     Featslist <- c("name",unlist(xmllist))
     names(Featslist) = NULL
     return(Featslist)
