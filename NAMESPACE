@@ -1,5 +1,8 @@
 export(import_XML)
 export(clustering)
 export(plot_heatmap)
+export(plot_tsne)
+export(plot_rag)
+export(plot_violin)
 S3method(plot, MigrDat)
 importFrom(data.table, ":=")
