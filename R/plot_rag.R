@@ -1,5 +1,9 @@
 plot_rag <- function(MigrObj, clusterType = "ILoRegclusters") {
   
+  if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
+    stop("No clustering data available. Please run the clustering first.")
+  }
+  
   type = "S"
   dat = spots.raw(MigrObj) 
   dat$clusts = clusterings(MigrObj)[[type]][[clusterType]]

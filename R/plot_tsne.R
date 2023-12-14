@@ -1,5 +1,9 @@
 plot_tsne <- function(MigrObj, uniq=NULL) {
   
+  if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
+    stop("No clustering data available. Please run the clustering first.")
+  }
+  
   if (is.null(uniq)) {
     stop("Please specify a named clustering")
   }

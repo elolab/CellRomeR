@@ -1,6 +1,11 @@
 # Plots violin plot of features grouped by clusters
 
 plot_violin <- function(MigrObj, feature = NULL, data.slot = "raw", type = "S", clusterType = "ILoRegclusters") {
+  
+  if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
+    stop("No clustering data available. Please run the clustering first.")
+  }
+  
   if (is.null(feature)) {
     stop("Please specify a feature to plot")
   }
