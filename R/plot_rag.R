@@ -11,12 +11,12 @@ plot_rag <- function(MigrObj) {
   
   
   
-  ggplot(data = dat, mapping = aes_string(x = "FRAME", y = "SPEED", color = "clusts")) +
-    scale_color_manual(values = clst.cols) +
-    geom_point(size = 1, shape = 15) +
-    theme(panel.background = element_rect(fill = 'black', colour = 'grey'),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())
+  ggplot2::ggplot(data = dat, mapping = ggplot2::aes_string(x = "FRAME", y = "SPEED", color = "clusts")) +
+    ggplot2::scale_color_manual(values = clst.cols) +
+    ggplot2::geom_point(size = 1, shape = 15) +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'black', colour = 'grey'),
+          panel.grid.major = ggplot2::element_blank(),
+          panel.grid.minor = ggplot2::element_blank())
 
   
 }
