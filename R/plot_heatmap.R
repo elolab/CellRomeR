@@ -1,14 +1,14 @@
 
-plot_heatmap <- function(x) {
+plot_heatmap <- function(MigrObj) {
   
-  if (length(unique(x@clustering$S$ILoRegclusters))==1) {
+  if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
     stop("No clustering data available. Please run the clustering first.")
   }
   
-  clusters <- unique(x@clustering$S$ILoRegclusters)
-  markers <- which(sapply(x@spots$raw, typeof)=="double" | sapply(x@spots$raw, typeof)=="integer")
+  clusters <- unique(MigrObj@clustering$S$ILoRegclusters)
+  markers <- which(sapply(MigrObj@spots$raw, typeof)=="double" | sapply(MigrObj@spots$raw, typeof)=="integer")
   
-  data.heatmap <- data.frame(x@spots$raw)
+  data.heatmap <- data.frame(MigrObj@spots$raw)
   data.heatmap <- t(apply(data.heatmap[,markers], 2, function(y) tapply(y, migrdata@clustering$S$ILoRegclusters, function(z)  median(z, na.rm=TRUE))))
   data.heatmap <- data.heatmap[which(apply(data.heatmap,1,sd)>0),]
   
