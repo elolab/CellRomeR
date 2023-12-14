@@ -6,7 +6,7 @@ This function plots a violin plot of specific variable over clusters.
 }
 
 \usage{
-plot_violin(MigrObj, feature = NULL, data.slot = "raw", type = "S", clusterType = "ILoRegclusters")
+plot_violin(MigrObj, feature = NULL, data.slot = "raw", type = "S")
 }
 
 \arguments{
@@ -14,7 +14,6 @@ plot_violin(MigrObj, feature = NULL, data.slot = "raw", type = "S", clusterType 
 \item{feature}{Feature to be plotted}
 \item{data.slot}{Data slot}
 \item{type}{Type}
-\item{clusterType}{Cluster type}
 }
 
 

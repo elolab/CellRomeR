@@ -1,4 +1,4 @@
-plot_rag <- function(MigrObj, clusterType = "ILoRegclusters") {
+plot_rag <- function(MigrObj) {
   
   if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
     stop("No clustering data available. Please run the clustering first.")
@@ -6,7 +6,7 @@ plot_rag <- function(MigrObj, clusterType = "ILoRegclusters") {
   
   type = "S"
   dat = spots.raw(MigrObj) 
-  dat$clusts = clusterings(MigrObj)[[type]][[clusterType]]
+  dat$clusts = clusterings(MigrObj)[[type]][["ILoRegclusters"]]
   clst.cols = pals::brewer.accent(length(unique(dat$clusts)))
   
   

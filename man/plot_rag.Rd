@@ -5,12 +5,11 @@
 }
 
 \usage{
-plot_rag(MigrObj, clusterType = "ILoRegclusters")
+plot_rag(MigrObj)
 }
 
 \arguments{
 \item{MigrObj}{`MigrDat` object}
-\item{clusterType}{Cluster type}
 }
 
 
