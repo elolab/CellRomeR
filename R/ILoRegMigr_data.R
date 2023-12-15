@@ -153,16 +153,18 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
 
 
 #' #### Fetch track_ids for spots from edge table ####
-#' track_ids4spotsM
-#' fastest of three implementations tried
+#' @name track_ids4spotsM
 #'
-#'@param dtExml is a TrackMate edges datatable imported from TMxml
-#'@param dtSxml is a TrackMate spots datatable imported from TMxml
+#' @param dtExml is a TrackMate edges datatable imported from TMxml
+#' @param dtSxml is a TrackMate spots datatable imported from TMxml
+#' @description
+#' To fetch track_ids for spots to add them to spots data.table
+#' fastest of the three tested implementations 
 #'
 #'
-#'@examples
+#' @examples
 #'
-#'@export
+#' @export
 track_ids4spotsM <- function(dtExml,dtSxml) {
   # Using matching
   colsE = c("TRACK_ID","SPOT_SOURCE_ID","SPOT_TARGET_ID")
@@ -278,6 +280,7 @@ speed2spots.raw <- function(MigrDat, NAs0 = TRUE) {
 #'
 init.metadata <- function(MigrObj) {
   
+  # e is column index before QUALITY column. 
   e = grep("QUALITY",colnames(spots.raw(MigrObj)))-1
   MigrObj@metadata[["S"]] <- spots.raw(MigrObj)[,1:e]
   MigrObj@metadata[["T"]] <- tracks.raw(MigrObj)[,1:2]
@@ -286,7 +289,13 @@ init.metadata <- function(MigrObj) {
   return(MigrObj)
 }
 
-
+#' @name init.clustering
+#' @description
+#' Prepares `clustering` slot with correct number of rows for clustering data. 
+#' Can be used also to wipe all or reset `clustering` slot. 
+#' Should actually be a data.table for consistency. 
+#' There may be a problem as fetched data does not allow data.table type of slicing. 
+#'
 init.clustering <- function(MigrObj) {
   
   default.clust.names <- c("kmeans","hclusts","ILoRegclusters")
@@ -310,12 +319,14 @@ init.clustering <- function(MigrObj) {
   return(MigrObj)
 }
 
-#### Get data ####
+#' ### Get data ####
+#' @name getdtcols
+#' 
 getdtcols <- function(MigrObj, dat.slot = "scaled", type = "STE",
                       predef =  "none", vars = NULL, incl.pattern = NULL,
                       excld.pattern = NULL, numerics = TRUE, rnames = FALSE) {
   
-  predef = match.arg(predef, c("none", "technical", "morphological", "clust", "coord"), several.ok = FALSE)
+  predef = match.arg(predef, c("none", "technical", "morphological", "morphplus", "clust", "coord"), several.ok = FALSE)
   
   # Standard variables like coordinates IDs etc. which we are not interested in as data 
   StdP = Std.pattern(MigrObj)
@@ -343,7 +354,7 @@ getdtcols <- function(MigrObj, dat.slot = "scaled", type = "STE",
     # vars
     colz <- vars[vars %in% colnames(dt)]
     data <-  dt[,..colz]
-  } else if (predef %in% c("technical", "morphological", "clust", "coord") ) {
+  } else if (predef %in% c("technical", "morphological", "morphplus", "clust", "coord") ) {
     # predefined
     data = dt.colSpt(dt, excld.pattern = NULL, predef = predef, numerics = numerics)
   } else {print("Incompatible variable choosing at the moment. Check if dat.slot exists!")
@@ -411,13 +422,18 @@ slot.usage <- function(MigrDatObj) {
 #### Function to fetch dt columns ####
 #' Works with some arguments only!
 #' @name dt.colSpt
-#'
+#' @description
+#' A complex general data fetcher to be used with various functions using data. 
+#' Tries to handle data fetching for different purposes including clustering and plotting. 
+#' Should be split into more smaller more specific functions. 
+#' 
 #'
 #' @export
 dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "none", vars = NULL, numerics = F,
                       StdP = NULL, TechP = NULL, MorphP = NULL) {
   `%nin%` <- Negate(`%in%`)
   
+  # If vars defined, return just dt with vars!  
   if (length(vars)>0) {
     colz <- vars[vars %in% colnames(dt)]
     dt <-  dt[,..colz]
@@ -437,7 +453,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
   }
   
-  # Process exclusion patterns
+  # Process exclusion patterns to contain standard excluded and given exclusions.
   excld.pattern <- excld.pattern.process(excld.pattern, StdP = StdP)
   
   predef = match.arg(predef, c("coord","technical", "morphological", "morphplus","clust", "nontechnical", "none"), several.ok = TRUE)
@@ -466,6 +482,8 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     dtMh <- data.table::copy(dt)
     dtMh[, grep(MorphP, colnames(dtMh), invert = T):=NULL]
   } else dtMh = NULL
+  
+  # Any but technical and in exclusion 
   if (any(predef %in% "clust")) {
     dtClst <- data.table::copy(dt)
     #negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
@@ -477,13 +495,17 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
       dtClst[,!num_cols:=NULL]
     }
   } else dtClst = NULL
+  
+  # Any but technical
   if (any(predef %in% "nontechnical")) {
     dtNtch <- data.table::copy(dt)
     negpattern = combine_patterns(c(StdP,TechP), logic = "OR")
     dtNtch[, grep(negpattern, colnames(dtNtch), invert = F):=NULL]
   } else dtNtch = NULL
   
-  # Use inclusion patterns
+  # Use inclusion patterns 
+  # There was breakage with use of is.null(excld.pattern) Hence match usage. 
+  # "NO_EXCLUSION" is from excld.pattern.process parsing. 
   if (!is.null(incl.pattern)  & excld.pattern=="NO_EXCLUSION" ) {
     dtF <- data.table::copy(dt)
     inclCols = grep(incl.pattern, colnames(dt), value = T, invert = F)
