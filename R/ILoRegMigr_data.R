@@ -20,23 +20,23 @@
 #'
 #' @export
 standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NULL, stdsE = NULL) {
-
-
+  
+  
   StdP = "^LABEL|^label|ID$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
   # Standards is also stored in the object and could be retrieved from there, except function does not use MigrDat.
-
+  
   sort.spots <- function(dt.spots) {
     dt.spots[, SPOT_ID := as.numeric(SPOT_ID)]
     data.table::setorder(dt.spots, TRACK_ID, FRAME) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
     dt.spots[, SPOT_ID := as.character(SPOT_ID)]
   }
-
+  
   sort.edges <- function(dt.edges) {
     dt.edges[, SPOT_SOURCE_ID := as.numeric(SPOT_SOURCE_ID)]
     data.table::setorder(dt.edges, TRACK_ID, SPOT_SOURCE_ID) # TRACK_ID should be split into char and numeric part for correct ordering before sorting
     dt.edges[, SPOT_SOURCE_ID := as.character(SPOT_SOURCE_ID)]
   }
-
+  
   sort.tracks <- function(dt.tracks) {
     dt.tracks[, TRACK_ID := as.numeric(TRACK_ID)]
     data.table::setorder(dt.tracks, TRACK_ID)
@@ -45,7 +45,7 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
   # sort.tracks <- function(dt.tracks) {
   #   setorder(dt.tracks, LABEL)
   # }
-
+  
   # Example lists provided.
   # Standard for spots
   if (type == "S") {
@@ -63,7 +63,7 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
       )
     } else {stdsX = stdsS}
   }
-
+  
   # Standard for tracks
   if (type == "T") {
     if (length(stdsT) <1 | is.null(stdsT)) {
@@ -98,7 +98,7 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
       )
     } else {stdsX = stdsT}
   }
-
+  
   # Standard for edges
   if (type == "E") {
     if (length(stdsE) <1 | is.null(stdsE)) {
@@ -114,40 +114,40 @@ standardize_dt <- function(dtIn, type = c("S","T","E"), stdsS = NULL, stdsT = NU
                    LINK_COST = c("LINK_COST")
       )
     } else {stdsX = stdsE}
-
+    
   }
-
+  
   # Column names in and out
   colmnIn = colnames(dtIn)
   colmnOut = colnames(dtIn)
-
+  
   # Check and fix names
   for (var in names(stdsX)) {
     colmnOut[grep(combine_patterns(stdsX[[var]]), colmnOut)] = as.character(var)
   }
-
+  
   colnames(dtIn) = colmnOut
   # Standard ordering
   standard_cols = names(stdsX)[names(stdsX) %in% colmnOut]
   nonstandard_cols = colmnOut[! (colmnOut %in%  names(stdsX))]
   colorder = c(standard_cols, nonstandard_cols)
-
+  
   data.table::setcolorder(dtIn, colorder)
-
+  
   # Convert types to what they look like.
   dtIn <- type.convert(dtIn, as.is = TRUE)
-
+  
   # set some ID-numbers to characters for matching and not confusing to indices
   ToChar = c("TRACK_ID","TRACK_ID2","SPOT_SOURCE_ID","SPOT_TARGET_ID","ID","SPOT_ID")
   Cols2Char =  ToChar[ToChar %in% names(dtIn) ]
   for (col in Cols2Char) data.table::set(dtIn, j = col, value = as.character(dtIn[[col]]))
-
+  
   if (type == "S") {sort.spots(dtIn)}
   if (type == "T") {sort.tracks(dtIn)}
   if (type == "E") {sort.edges(dtIn)}
-
+  
   return(dtIn)
-
+  
 }
 
 
@@ -178,7 +178,7 @@ track_ids4spotsM <- function(dtExml,dtSxml) {
   pos2 = match(mch, es_ss_tsA[["SPOT_TARGET_ID"]], nomatch = nomatchIdx)
   idx = data.table::data.table(pos1 = pos1, pos2 = pos2)[, min:= do.call(pmin, .SD)][,min]
   track_ids = es_ss_tsA[["TRACK_ID"]][idx]
-
+  
   if (any(is.na(track_ids))) {
     print("Warning some spots were not matched!")
   }
@@ -198,32 +198,32 @@ track_ids4spotsM <- function(dtExml,dtSxml) {
 #'
 #' @export
 getROIpoints_TMxml <- function(TMxml, IDs = NULL) {
-
+  
   #funs
   strsplt.Space <- function(x) {
     strsplit(x,split = " ") }
-
+  
   strsplt.coord <- function(x) {
     coorX = strsplit(x,split = " ")
     coorX = as.numeric(coorX)
     return(coorX) }
   coordNum <- function(x) {as.numeric(x) }
-
+  
   ## Ids for the coords
   if (is.null(IDs)) {
     IDs = XML::xpathSApply(TMxml, "//Spot", XML::xmlGetAttr, "name")
   }
-
-
+  
+  
   # get and process coordinates
   coords = XML::xmlValue(x = XML::getNodeSet(TMxml, "//Spot"))
   names(coords) = IDs
-
+  
   CoordSet = sapply(coords, FUN = strsplt.Space)
   CoordSet = lapply(CoordSet, FUN = coordNum)
-
+  
   return(CoordSet)
-
+  
 }
 
 
@@ -249,28 +249,28 @@ getROIpoints_TMxml <- function(TMxml, IDs = NULL) {
 #'
 #' @export
 speed2spots.raw <- function(MigrDat, NAs0 = TRUE) {
-
+  
   spots <- data.table::copy(spots.raw(MigrDat))
   edges <- data.table::copy(edges.raw(MigrDat))
-
+  
   spots <- spots[edges, SPEED := i.SPEED, on = c("SPOT_ID" = "SPOT_SOURCE_ID")]
   spots <- spots[edges, SPEED := i.SPEED, on = c("SPOT_ID" = "SPOT_TARGET_ID")]
-
+  
   # The SPEED and DISPLACEMENT are identical! >> Speed is displacement/delta_time
   #spots <- spots[edges, DISPLACEMENT := i.DISPLACEMENT, on = c("SPOT_ID" = "SPOT_SOURCE_ID")]
   #spots <- spots[edges, DISPLACEMENT := i.DISPLACEMENT, on = c("SPOT_ID" = "SPOT_TARGET_ID")]
-
+  
   spots <- spots[edges, DIRECTIONAL_CHANGE_RATE := i.DIRECTIONAL_CHANGE_RATE, on = c("SPOT_ID" = "SPOT_TARGET_ID")]
   spots <- spots[edges, DIRECTIONAL_CHANGE_RATE := i.DIRECTIONAL_CHANGE_RATE, on = c("SPOT_ID" = "SPOT_SOURCE_ID")]
-
+  
   if (NAs0 == TRUE) {
     spots[is.na(SPEED), SPEED := 0]
     #spots[is.na(DISPLACEMENT), DISPLACEMENT := 0]
     spots[is.na(DIRECTIONAL_CHANGE_RATE), DIRECTIONAL_CHANGE_RATE := 0]
   }
-
+  
   MigrDat@spots$raw <- spots
-
+  
   return(MigrDat)
 }
 
@@ -285,7 +285,7 @@ init.metadata <- function(MigrObj) {
   MigrObj@metadata[["S"]] <- spots.raw(MigrObj)[,1:e]
   MigrObj@metadata[["T"]] <- tracks.raw(MigrObj)[,1:2]
   MigrObj@metadata[["E"]] <- edges.raw(MigrObj)[,1:2]
-    
+  
   return(MigrObj)
 }
 
@@ -304,17 +304,17 @@ init.clustering <- function(MigrObj) {
   MigrObj@clustering[["S"]][["kmeans"]] <- 0
   MigrObj@clustering[["S"]][["hclusts"]] <- 0
   MigrObj@clustering[["S"]][["ILoRegclusters"]] <- 0
-
+  
   MigrObj@clustering[["T"]] <- tracks.raw(MigrObj)[,1:2]
   MigrObj@clustering[["T"]][["kmeans"]] <- 0
   MigrObj@clustering[["T"]][["hclusts"]] <- 0
   MigrObj@clustering[["T"]][["ILoRegclusters"]] <- 0
-
+  
   MigrObj@clustering[["E"]] <- edges.raw(MigrObj)[,1:2]
   MigrObj@clustering[["E"]][["kmeans"]] <- 0
   MigrObj@clustering[["E"]][["hclusts"]] <- 0
   MigrObj@clustering[["E"]][["ILoRegclusters"]] <- 0
-
+  
   #cat("\nClustering data.tables for spots, tracks, and edges was added to clustering slot.\n")
   return(MigrObj)
 }
@@ -487,9 +487,9 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     dtMh[, grep(MorphPpos, colnames(dtMh), invert = T):=NULL]
   } else dtMh = NULL
   if (any(predef %in% "morphplus")) {
-    dtMh <- data.table::copy(dt)
-    dtMh[, grep(MorphP, colnames(dtMh), invert = T):=NULL]
-  } else dtMh = NULL
+    dtMhp <- data.table::copy(dt)
+    dtMhp[, grep(MorphP, colnames(dtMhp), invert = T):=NULL]
+  } else dtMhp = NULL
   
   # Any but technical and in exclusion 
   if (any(predef %in% "clust")) {
@@ -551,7 +551,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     #dtF[, grep(inclCols, colnames(dtF), invert = T):=NULL]
   } else dtF = NULL
   
-  lst = list(dtF = dtF, dtC = dtC, dtTh = dtTh, dtMh = dtMh, dtClst = dtClst, dtNtch = dtNtch)
+  lst = list(dtF = dtF, dtC = dtC, dtTh = dtTh, dtMh = dtMh, dtMhp = dtMhp, dtClst = dtClst, dtNtch = dtNtch)
   lst = lst[!sapply(lst, is.null)]
   
   if (length(lst) == 1) {
@@ -559,5 +559,3 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   }
   return(lst)
 }
-
-
