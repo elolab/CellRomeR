@@ -433,14 +433,15 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   }
   if (is.null(MorphP)) {
     # create check for dt type STE.
-    MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
+    MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$"
   }
   
   # Process exclusion patterns
   excld.pattern <- excld.pattern.process(excld.pattern, StdP = StdP)
   
-  predef = match.arg(predef, c("coord","technical", "morphological", "clust", "nontechnical", "none"), several.ok = TRUE)
+  predef = match.arg(predef, c("coord","technical", "morphological", "morphplus","clust", "nontechnical", "none"), several.ok = TRUE)
   
+  # Get just XY-coordinates per data type using specific colnmae as check 
   if (any(predef %in% "coord")) {
     dtC <- data.table::copy(dt)
     #dtC[, grep("_ID$|^FRAME$|POSITION.*[XYZT]", colnames(dtC), invert = T):=NULL]
