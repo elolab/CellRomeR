@@ -31,7 +31,7 @@ MigrDat <- setClass(
     IDs = "list",
     misc = "ANY"
   ),
-
+  
   prototype = list(
     spots = list(raw = NULL, normalized = NULL, scaled = NULL ),
     tracks = list(raw = NULL, normalized = NULL, scaled = NULL ),
@@ -40,7 +40,7 @@ MigrDat <- setClass(
     metadata = list(experiment = NULL, sample = NULL, replicate = NULL, condition = NULL),
     dimreductions = list("S" = list(PCA = NULL, UMAP = NULL, UMAP3D = NULL),
                          "T" = list(PCA = NULL, UMAP = NULL, UMAP3D = NULL),
-                          "E" = list(PCA = NULL, UMAP = NULL, UMAP3D = NULL)),
+                         "E" = list(PCA = NULL, UMAP = NULL, UMAP3D = NULL)),
     clustering = list("S" = NULL,
                       "T" = NULL,
                       "E" = NULL),
@@ -59,11 +59,11 @@ MigrDat <- setClass(
 MigrDat_newobj <- function(dataset = "data", experiment = "Exp_1", sample = "Sample1",
                            data_type = c("TMxml","TMtable","MigrTable"),
                            condition = NULL, replicate = NULL
-                           ) {
+) {
   # Check arguments
   stopifnot(!missing(dataset), !missing(data_type))
   data_type <- match.arg(data_type, c("TMxml","TMtable","MigrTable"))
-
+  
   # Create object
   dobj = new("MigrDat")
   #dobj@spots = list(raw = NULL, filtered = NULL, normalized = NULL )
@@ -79,16 +79,16 @@ MigrDat_newobj <- function(dataset = "data", experiment = "Exp_1", sample = "Sam
   if (!is.null(replicate)) {
     dobj@metadata$replicate = replicate
   }
-
+  
   StdP = "^LABEL|^label|ID$|ID[1-9]$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
   TechP = "CH[1-9]$"
   MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
   patterns = list(standard = StdP, technical = TechP, morphological = MorphP)
-
+  
   # Store standard pattern to metadata
   dobj@metadata$Std.pattern <- StdP
   dobj@metadata$patterns <- patterns
-
+  
   dobj@metadata$data.in.use = c("raw") #
   #dobj@IDs = list(spots = "NULL", tracks = "NULL", edges = "NULL")
   return(dobj)
@@ -106,34 +106,34 @@ setMethod("show",
             cat("data of cell experiment", (object@metadata$name), "of condition ", (object@metadata$condition), "\n")
             cat("imported from", (object@metadata$TMxml_file), "\n\n")
             cat("Has following slots available: \n", slotNames(object), "\n\n")
-
+            
             slotz = slots.in.use(object)
-
+            
             cat("Spots available as:", slotz$in.spots,"\n"  )
             cat("Tracks available as:", slotz$in.tracks,"\n"  )
             cat("Edges available as:", slotz$in.edges,"\n"  )
             cat("Roi_points available as:", slotz$in.roi_points,"\n"  )
-
-
+            
+            
             cat("\nDefault PCAs are:", default.PCAs(object)[[1]], default.PCAs(object)[[2]], default.PCAs(object)[[3]] )
             cat("\nDefault UMAPs are:", default.UMAPs(object)[[1]],default.UMAPs(object)[[2]],default.UMAPs(object)[[3]] )
             cat("\nDefault UMAP3Ds are:", default.UMAP3Ds(object)[[1]], default.UMAP3Ds(object)[[2]], default.UMAP3Ds(object)[[3]],"\n" )
-
+            
             cat("\nFollowing",length(names(dimreducts(object))), "dimensional reductions are available:\n", names(dimreducts(object)),"\n" )
             cat("\n",length( names(clusterings(object)) ), "clustering sets with following unique identifiers are available:\n", names(clusterings(object)),"\n\n" )
-
-            cat("\nDefault clustering is:", default.ILoRegclusters(object)[[1]])
+            
+            cat("\nDefault clustering is:", default.ILoRegclusters(object)[[1]],"\n")
             #cat("\nDefault kmeans clustering is:", default.kmeans(object)[[1]],"with", default.kmeans(object)[[2]])
             #cat("\nDefault hclust clustering is:", default.hclusts(object) [[1]],"with", default.hclusts(object)[[2]])
             #cat("\nDefault ILoReg clustering is:", default.ILoRegclusters(object)[[1]],"with", default.ILoRegclusters(object)[[2]] )
             #cat("\nDefault Seurat clustering is:", default.Seurclusters(object)[[1]],"with", default.Seurclusters(object)[[2]], "\n\n" )
-
-            cat("The MigrDat object contains:\n")
+            
+            cat("\nThe MigrDat object contains:\n")
             cat(nrow(object@tracks$raw), "tracks with ", ncol(object@tracks$raw),  "variables.\n")
             cat(nrow(object@edges$raw), "edges with ", ncol(object@edges$raw),  "variables.\n")
             cat(nrow(object@spots$raw), "spots with ", ncol(object@spots$raw),  "variables.\n\n")
-
-
+            
+            
           })
 
 #### Assessors and getters ####
@@ -165,13 +165,13 @@ setMethod("Std.pattern<-", "MigrDat", function(x, value) {
 #' @export
 setGeneric("MigrObj.vars.raw", function(object) {standardGeneric("MigrObj.vars.raw") })
 setMethod("MigrObj.vars.raw", "MigrDat", function(object) {
-
+  
   vars <- sapply(list(spots.raw(object),
                       tracks.raw(object),
                       edges.raw(object)), colnames)
   names(vars) <- c("spot.vars", "track.vars", "edge.vars")
   return(vars)
-
+  
 })
 
 #' #### Get variable names ####
@@ -182,13 +182,13 @@ setMethod("MigrObj.vars.raw", "MigrDat", function(object) {
 #' @export
 setGeneric("MigrObj.vars.normalized", function(object) {standardGeneric("MigrObj.vars.normalized") })
 setMethod("MigrObj.vars.normalized", "MigrDat", function(object) {
-
+  
   vars <- sapply(list(spots.normalized(object),
                       tracks.normalized(object),
                       edges.normalized(object)), colnames)
   names(vars) <- c("spot.vars", "track.vars", "edge.vars")
   print(vars)
-
+  
 })
 
 
@@ -200,13 +200,13 @@ setMethod("MigrObj.vars.normalized", "MigrDat", function(object) {
 #' @export
 setGeneric("MigrObj.vars.scaled", function(object) {standardGeneric("MigrObj.vars.scaled") })
 setMethod("MigrObj.vars.scaled", "MigrDat", function(object) {
-
+  
   vars <- sapply(list(spots.scaled(object),
                       tracks.scaled(object),
                       edges.scaled(object)), colnames)
   names(vars) <- c("spot.vars", "track.vars", "edge.vars")
   return(vars)
-
+  
 })
 
 ##### Data getters #####
@@ -222,7 +222,7 @@ setMethod("MigrObj.raw", "MigrDat", function(object) {
   print(object@spots$raw)
   print(object@tracks$raw)
   print(object@edges$raw)
-  })
+})
 
 
 #' ## Get and store whole normalized data from MigrDat object ####
@@ -236,7 +236,7 @@ setMethod("MigrObj.normalized", "MigrDat", function(object) {
   print(object@spots$normalized)
   print(object@tracks$normalized)
   print(object@edges$normalized)
-
+  
 } )
 
 
@@ -657,9 +657,9 @@ setMethod("default.DRs.edges<-", "MigrDat", function(x, value) {
 #' @export
 setGeneric("default.PCAs", function(x) standardGeneric("default.PCAs"))
 setMethod("default.PCAs", "MigrDat", function(x)
-          list(spots = default.PCA.spots(x),
-               tracks = default.PCA.tracks(x),
-               edges = default.PCA.edges(x)) )
+  list(spots = default.PCA.spots(x),
+       tracks = default.PCA.tracks(x),
+       edges = default.PCA.edges(x)) )
 
 # setGeneric("default.PCA<-", function(x, value) standardGeneric("default.PCA<-"))
 # setMethod("default.PCA<-", "MigrDat", function(x, value) {
@@ -974,7 +974,55 @@ setMethod("tracks.clusters<-", "MigrDat", function(x, value) {
   x
 })
 
+#### Clustering classes ###
 
+#' ## Get and store raw spots clustering in MigrDat object ####
+#' @examples
+#'
+#' spots.clustering(MigrDat_XMLtest)
+#' spots.clustering(MigrDat_XMLtest) <- new.dt
+#'
+#' @export
+setGeneric("spots.clustering", function(x) standardGeneric("spots.clustering"))
+setGeneric("spots.clustering<-", function(x, value) standardGeneric("spots.clustering<-"))
+
+setMethod("spots.clustering", "MigrDat", function(x) x@clustering[["S"]])
+setMethod("spots.clustering<-", "MigrDat", function(x, value) {
+  x@clustering[["S"]] <- value
+  x
+})
+
+#' ## Get and store raw tracks clustering in MigrDat object ####
+#' @examples
+#'
+#' spots.clustering(MigrDat_XMLtest)
+#' spots.clustering(MigrDat_XMLtest) <- new.dt
+#'
+#' @export
+setGeneric("tracks.clustering", function(x) standardGeneric("tracks.clustering"))
+setGeneric("tracks.clustering<-", function(x, value) standardGeneric("tracks.clustering<-"))
+
+setMethod("tracks.clustering", "MigrDat", function(x) x@clustering[["T"]])
+setMethod("tracks.clustering<-", "MigrDat", function(x, value) {
+  x@clustering[["T"]] <- value
+  x
+})
+
+#' ## Get and store raw edges clustering in MigrDat object ####
+#' @examples
+#'
+#' spots.clustering(MigrDat_XMLtest)
+#' spots.clustering(MigrDat_XMLtest) <- new.dt
+#'
+#' @export
+setGeneric("edges.clustering", function(x) standardGeneric("edges.clustering"))
+setGeneric("edges.clustering<-", function(x, value) standardGeneric("edges.clustering<-"))
+
+setMethod("edges.clustering", "MigrDat", function(x) x@clustering[["E"]])
+setMethod("edges.clustering<-", "MigrDat", function(x, value) {
+  x@clustering[["E"]] <- value
+  x
+})
 
 #' ## Get default clusterings ####
 #' @name default.clusts.spots
@@ -1320,7 +1368,7 @@ ILoRegMigr <- setClass(
     history = "ANY",
     misc = "ANY"
   ),
-
+  
   prototype = list(
     datasets = NULL,
     projects = NULL,
@@ -1363,7 +1411,7 @@ ILoRegMigr.newobj <- function(project_name = "Analysis1", conditions = c("con1",
   dobj@joint_tables[["joint_spots"]]  = list()
   dobj@joint_tables[["joint_tracks"]]  = list()
   dobj@joint_tables[["joint_edges"]]  = list()
-
+  
   return(dobj)
 }
 
