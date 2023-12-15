@@ -47,7 +47,7 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   }
   if (set.default) {
     MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegClsts[[nm]]
-    default.kmeans(MigrObj)[[type]] <- ILoRegname
+    default.ILoRegclusters(MigrObj)[[type]] <- ILoRegname
   }
   
   return(MigrObj)
