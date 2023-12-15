@@ -317,12 +317,13 @@ getdtcols <- function(MigrObj, dat.slot = "scaled", type = "STE",
   
   predef = match.arg(predef, c("none", "technical", "morphological", "clust", "coord"), several.ok = FALSE)
   
-  # standard variable names we are not interested in
+  # Standard variables like coordinates IDs etc. which we are not interested in as data 
   StdP = Std.pattern(MigrObj)
   
   # Fetch data.table
   dt <- getdt(MigrObj, dat.slot = dat.slot, type = type)
   
+  # Add rownames if needed for something. Each data type should have the LABEL column for IDs 
   if (rnames) {
     rownames(dt) <- dt[["LABEL"]]
   }
@@ -409,7 +410,7 @@ slot.usage <- function(MigrDatObj) {
 
 #### Function to fetch dt columns ####
 #' Works with some arguments only!
-#'
+#' @name dt.colSpt
 #'
 #'
 #' @export
@@ -441,7 +442,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   
   predef = match.arg(predef, c("coord","technical", "morphological", "morphplus","clust", "nontechnical", "none"), several.ok = TRUE)
   
-  # Get just XY-coordinates per data type using specific colnmae as check 
+  # To initiate data coordinates (dtC), get just XY-coordinates per data type using specific colnmae as check 
   if (any(predef %in% "coord")) {
     dtC <- data.table::copy(dt)
     #dtC[, grep("_ID$|^FRAME$|POSITION.*[XYZT]", colnames(dtC), invert = T):=NULL]
@@ -456,6 +457,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     }
   } else dtC = NULL
   
+  # Add variables to data.table based on predefined sets and exclusion 
   if (any(predef %in% "technical")) {
     dtTh <- data.table::copy(dt)
     dtTh[, grep(TechP, colnames(dtTh), invert = T):=NULL]
