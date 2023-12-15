@@ -341,19 +341,17 @@ ParseFltr <- function(filter) {
 #' @export
 sync.MigrObj <- function(MigrObj) {
   
+  # get spots labels present in all spots tables.
   spot.labels <- Reduce(intersect, lapply((CellRomeR:::spotsLS(MigrObj)[!sapply(CellRomeR:::spotsLS(MigrObj), is.null)]), `[[`, "LABEL") )
-  
-  if (is.null(spot.labels)) {
-    stop("No spot labels retrieved!")
-  }
+  # Check for functionality
+  if (is.null(spot.labels)) {stop("No spot labels retrieved!")}
   spots.raw(MigrObj) <- spots.raw(MigrObj)[LABEL %in% spot.labels]
   tryCatch(spots.normalized(MigrObj) <- spots.normalized(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("no spot norm")} )
   tryCatch(spots.scaled(MigrObj) <- spots.scaled(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("no spot scaled")} )
   tryCatch(spots.meta(MigrObj) <- spots.meta(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("no spot metadata")} )
   tryCatch(roi_points.raw(MigrObj) <- roi_points.raw(MigrObj)[spot.labels], error = function(e) {print("roi_points data err")} )
+  tryCatch(spots.clusters(MigrObj) <- spots.clusters(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("clusters data err")} )
   #tryCatch(  (MigrObj) <-    (MigrObj)[spot.labels], error = function(e) {print("roi_points data err")} )
-  
-  
   
   track.labels <- Reduce(intersect, lapply((CellRomeR:::tracksLS(MigrObj)[!sapply(CellRomeR:::tracksLS(MigrObj), is.null)]), `[[`, "LABEL") )
   if (is.null(track.labels)) {
@@ -363,6 +361,7 @@ sync.MigrObj <- function(MigrObj) {
   tryCatch(tracks.normalized(MigrObj) <- tracks.normalized(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track norm")} )
   tryCatch(tracks.scaled(MigrObj) <- tracks.scaled(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track scaled")} )
   tryCatch(tracks.meta(MigrObj) <- tracks.meta(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track metadata")} )
+  tryCatch(tracks.clusters(MigrObj) <- tracks.clusters(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track clusters")} )
   
   edge.labels <- Reduce(intersect, lapply((CellRomeR:::edgesLS(MigrObj)[!sapply(CellRomeR:::edgesLS(MigrObj), is.null)]), `[[`, "LABEL") )
   if (is.null(edge.labels)) {
@@ -372,5 +371,6 @@ sync.MigrObj <- function(MigrObj) {
   tryCatch(edges.normalized(MigrObj) <- edges.normalized(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge norm")} )
   tryCatch(edges.scaled(MigrObj) <- edges.scaled(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge scaled")} )
   tryCatch(edges.meta(MigrObj) <- edges.meta(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge meta")} )
+  tryCatch(edges.clusters(MigrObj) <- edges.clusters(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge clusters")} )
   return(MigrObj)
 }
