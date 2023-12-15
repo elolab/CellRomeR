@@ -6,7 +6,7 @@ clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
                               predef =  "none",
                               vars = NULL, incl.pattern = NULL,
                               excld.pattern = NULL,
-                              scale = FALSE, 
+                              scale = TRUE, 
                               set.default = TRUE, threads = 0,...) {
   stopifnot(kILoReg > 0)
 

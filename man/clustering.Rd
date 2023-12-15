@@ -8,7 +8,7 @@
 clustering(MigrObj, dat.slot = "raw", type = "STE",
             uniq = "base", kILoReg = 0, predef =  "none",
             vars = NULL, incl.pattern = NULL, excld.pattern = NULL,
-            scale = FALSE, set.default = TRUE, threads = 0,\dots)
+            scale = TRUE, set.default = TRUE, threads = 0,\dots)
 }
 
 \arguments{
@@ -21,7 +21,7 @@ clustering(MigrObj, dat.slot = "raw", type = "STE",
 	\item{vars}{vars}
 	\item{incl.pattern}{Inclusion pattern}
 	\item{excld.pattern}{Exclusion pattern}
-	\item{scale}{A logical (deafult FALSE) indicating scaling}
+	\item{scale}{A logical (deafult TRUE) indicating scaling}
 	\item{set.default}{A logical (deafult FALSE)}
 	\item{threads}{Number of threads (deafult 0, i.e. all available)}
 	\item{\dots}{Additional items passed to ILoReg}
