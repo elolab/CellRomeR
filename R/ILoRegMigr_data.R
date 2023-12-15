@@ -425,12 +425,12 @@ slot.usage <- function(MigrDatObj) {
 #' @description
 #' A complex general data fetcher to be used with various functions using data. 
 #' Tries to handle data fetching for different purposes including clustering and plotting. 
-#' Should be split into more smaller more specific functions. 
-#' 
+#' Should be split into smaller and more specific functions. 
+#' Still think the patterns usage in getting is good working idea. Implementation needs re-thinking. 
 #'
 #' @export
 dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "none", vars = NULL, numerics = F,
-                      StdP = NULL, TechP = NULL, MorphP = NULL) {
+                      StdP = NULL, TechP = NULL, MorphP = NULL, MorphPpos = NULL) {
   `%nin%` <- Negate(`%in%`)
   
   # If vars defined, return just dt with vars!  
@@ -451,6 +451,10 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   if (is.null(MorphP)) {
     # create check for dt type STE.
     MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
+  }
+  if (is.null(MorphPpos)) {
+    # create check for dt type STE.
+    MorphPpos = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$"
   }
   
   # Process exclusion patterns to contain standard excluded and given exclusions.
@@ -473,12 +477,16 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     }
   } else dtC = NULL
   
-  # Add variables to data.table based on predefined sets and exclusion 
+  # Remove variables in dt based on keep the predefined sets 
   if (any(predef %in% "technical")) {
     dtTh <- data.table::copy(dt)
     dtTh[, grep(TechP, colnames(dtTh), invert = T):=NULL]
   } else dtTh = NULL
   if (any(predef %in% "morphological")) {
+    dtMh <- data.table::copy(dt)
+    dtMh[, grep(MorphPpos, colnames(dtMh), invert = T):=NULL]
+  } else dtMh = NULL
+  if (any(predef %in% "morphplus")) {
     dtMh <- data.table::copy(dt)
     dtMh[, grep(MorphP, colnames(dtMh), invert = T):=NULL]
   } else dtMh = NULL
