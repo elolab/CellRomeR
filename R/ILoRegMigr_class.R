@@ -125,7 +125,7 @@ setMethod("show",
             cat("\nDefault kmeans clustering is:", default.kmeans(object)[[1]],"with", default.kmeans(object)[[2]])
             cat("\nDefault hclust clustering is:", default.hclusts(object) [[1]],"with", default.hclusts(object)[[2]])
             cat("\nDefault ILoReg clustering is:", default.ILoRegclusters(object)[[1]],"with", default.ILoRegclusters(object)[[2]] )
-            cat("\nDefault Seurat clustering is:", default.Seurclusters(object)[[1]],"with", default.Seurclusters(object)[[2]], "\n\n" )
+            #cat("\nDefault Seurat clustering is:", default.Seurclusters(object)[[1]],"with", default.Seurclusters(object)[[2]], "\n\n" )
 
             cat("The MigrDat object contains:\n")
             cat(nrow(object@tracks$raw), "tracks with ", ncol(object@tracks$raw),  "variables.\n")
