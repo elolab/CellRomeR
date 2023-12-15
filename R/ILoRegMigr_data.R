@@ -289,26 +289,23 @@ init.metadata <- function(MigrObj) {
 
 init.clustering <- function(MigrObj) {
   
-  default.clust.names <- c("kmeans","hclusts","ILoRegclusters","Seurclusters")
+  default.clust.names <- c("kmeans","hclusts","ILoRegclusters")
   
   MigrObj@clustering[["S"]] <- spots.raw(MigrObj)[,1:2]
   MigrObj@clustering[["S"]][["kmeans"]] <- 0
   MigrObj@clustering[["S"]][["hclusts"]] <- 0
   MigrObj@clustering[["S"]][["ILoRegclusters"]] <- 0
-  MigrObj@clustering[["S"]][["Seurclusters"]] <- 0
-  
+
   MigrObj@clustering[["T"]] <- tracks.raw(MigrObj)[,1:2]
   MigrObj@clustering[["T"]][["kmeans"]] <- 0
   MigrObj@clustering[["T"]][["hclusts"]] <- 0
   MigrObj@clustering[["T"]][["ILoRegclusters"]] <- 0
-  MigrObj@clustering[["T"]][["Seurclusters"]] <- 0
-  
+
   MigrObj@clustering[["E"]] <- edges.raw(MigrObj)[,1:2]
   MigrObj@clustering[["E"]][["kmeans"]] <- 0
   MigrObj@clustering[["E"]][["hclusts"]] <- 0
   MigrObj@clustering[["E"]][["ILoRegclusters"]] <- 0
-  MigrObj@clustering[["E"]][["Seurclusters"]] <- 0
-  
+
   #cat("\nClustering data.tables for spots, tracks, and edges was added to clustering slot.\n")
   return(MigrObj)
 }
