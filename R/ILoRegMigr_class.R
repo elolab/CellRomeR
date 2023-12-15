@@ -985,9 +985,9 @@ setMethod("tracks.clusters<-", "MigrDat", function(x, value) {
 setGeneric("default.clusts.spots", function(x) standardGeneric("default.clusts.spots"))
 setGeneric("default.clusts.spots<-", function(x, value) standardGeneric("default.clusts.spots<-"))
 
-setMethod("default.clusts.spots", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")])
+setMethod("default.clusts.spots", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")])
 setMethod("default.clusts.spots<-", "MigrDat", function(x, value) {
-  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")] <- value
+  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")] <- value
   x
 })
 
@@ -1002,9 +1002,9 @@ setMethod("default.clusts.spots<-", "MigrDat", function(x, value) {
 setGeneric("default.clusts.tracks", function(x) standardGeneric("default.clusts.tracks"))
 setGeneric("default.clusts.tracks<-", function(x, value) standardGeneric("default.clusts.tracks<-"))
 
-setMethod("default.clusts.tracks", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")])
+setMethod("default.clusts.tracks", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")])
 setMethod("default.clusts.tracks<-", "MigrDat", function(x, value) {
-  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")] <- value
+  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")] <- value
   x
 })
 
@@ -1018,9 +1018,9 @@ setMethod("default.clusts.tracks<-", "MigrDat", function(x, value) {
 setGeneric("default.clusts.edges", function(x) standardGeneric("default.clusts.edges"))
 setGeneric("default.clusts.edges<-", function(x, value) standardGeneric("default.clusts.edges<-"))
 
-setMethod("default.clusts.edges", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")])
+setMethod("default.clusts.edges", "MigrDat", function(x) x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")])
 setMethod("default.clusts.edges<-", "MigrDat", function(x, value) {
-  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters","Seurclusters")] <- value
+  x@clustering[["S"]][,c("kmeans","hclusts","ILoRegclusters")] <- value
   x
 })
 
@@ -1081,19 +1081,19 @@ setMethod("default.ILoRegclusters<-", "MigrDat", function(x, value) {
 })
 
 #' ## Name of the default Seurclusters clustering in the MigrDat object ####
-#' @examples
+#' examples
 #'
 #' default.Seurclusters(MigrDat)
 #'
-#' @export
-setGeneric("default.Seurclusters", function(x) standardGeneric("default.Seurclusters"))
-setGeneric("default.Seurclusters<-", function(x, value) standardGeneric("default.Seurclusters<-"))
+#' export
+#setGeneric("default.Seurclusters", function(x) standardGeneric("default.Seurclusters"))
+#setGeneric("default.Seurclusters<-", function(x, value) standardGeneric("default.Seurclusters<-"))
 
-setMethod("default.Seurclusters", "MigrDat", function(x) x@metadata$Seurclusters)
-setMethod("default.Seurclusters<-", "MigrDat", function(x, value) {
-  x@metadata$Seurclusters <- value
-  x
-})
+#setMethod("default.Seurclusters", "MigrDat", function(x) x@metadata$Seurclusters)
+#setMethod("default.Seurclusters<-", "MigrDat", function(x, value) {
+#  x@metadata$Seurclusters <- value
+#  x
+#})
 
 
 
