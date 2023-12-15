@@ -423,7 +423,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
     return(dt)
   }
   
-  # Parse exclusion pattern with  "standard_varnames" option
+  # Parse exclusion patterns with  "standard_varnames" option
   if (is.null(StdP)) {
     StdP = "^LABEL|^label|ID$|ID[1-9]$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
   }
@@ -433,7 +433,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "n
   }
   if (is.null(MorphP)) {
     # create check for dt type STE.
-    MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$"
+    MorphP = "^RADIUS$|^ELLIPSE|^AREA$|^PERIMETER$|^CIRCULARITY$|^SOLIDITY$|^SPEED$|^DIRECTIONAL_CHANGE_RATE$"
   }
   
   # Process exclusion patterns
