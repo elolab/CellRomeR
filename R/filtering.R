@@ -348,6 +348,72 @@ rm_unmated_spots <- function(MigrObj) {
 
 
 
+
+#' @name DRs.TFfilterL
+#'
+#'
+DRs.TFfilterL <- function(DRs, TF_filter) {
+  lapply(DRs, DR.TFfilter, TF_filter)
+}
+
+#' @name DR.TFfilter
+#'
+#'
+DR.TFfilter <- function(DR, TF_filter) {
+  if (class(DR)[1] == "matrix") {
+    if ( dim(DR)[1] == length(TF_filter) ) {
+      DR <- DR[TF_filter,]
+    } else cat("Warning filtering vector length error!") 
+  } 
+  return(DR)
+}
+
+#' @name DRs.TFfilter
+#'
+#'
+DRs.TFfilter <- function(DRs, TF_filter) {
+  for (n in names(DRs)) {
+    if (class(DRs[[n]])[1] == "matrix") {
+      if ( dim(DRs[[n]])[1] == length(TF_filter) ) {
+        DRs[[n]] <- DRs[[n]][TF_filter,]
+      } else cat("Warning filtering vector length error!") 
+    } 
+  }
+  return(DRs)
+}
+
+
+
+#' @name DRs.syncL
+#'
+#'
+DRs.syncL <- function(MigrObj, labels, type = c("S","T","E")) {
+  
+  DRs.all = CellRomeR::dimreducts(MigrObj)
+  
+  if (type == "S") {
+    DRs <- DRs.all[[type]] 
+    DRs <- DRs.TFfilterL(DRs = DRs, TF_filter = spots.raw(MigrObj)[["LABEL"]] %in% labels)
+    DRs.all[[type]] <- DRs 
+  }
+  
+  if (type == "T") {
+    DRs <- DRs.all[[type]] 
+    DRs <- DRs.TFfilterL(DRs = DRs, TF_filter = tracks.raw(MigrObj)[["LABEL"]] %in% labels)
+    DRs.all[[type]] <- DRs 
+  }
+  
+  if (type == "E") {
+    DRs <- DRs.all[[type]] 
+    DRs <- DRs.TFfilterL(DRs = DRs, TF_filter = edges.raw(MigrObj)[["LABEL"]] %in% labels)
+    DRs.all[[type]] <- DRs 
+  }
+  
+  CellRomeR::dimreducts(MigrObj) <- DRs.all 
+  return(MigrObj)
+}
+
+
 #' @name sync.MigrObj
 #'
 #'
@@ -364,6 +430,7 @@ sync.MigrObj <- function(MigrObj) {
   tryCatch(spots.meta(MigrObj) <- spots.meta(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("no spot metadata")} )
   tryCatch(roi_points.raw(MigrObj) <- roi_points.raw(MigrObj)[spot.labels], error = function(e) {print("roi_points data err")} )
   tryCatch(spots.clusters(MigrObj) <- spots.clusters(MigrObj)[LABEL %in% spot.labels], error = function(e) {print("clusters data err")} )
+  MigrObj <- CellRomeR::DRs.syncL(MigrObj, labels = spot.labels, type = "S")
   #tryCatch(  (MigrObj) <-    (MigrObj)[spot.labels], error = function(e) {print("roi_points data err")} )
   
   track.labels <- Reduce(intersect, lapply((CellRomeR::tracksLS(MigrObj)[!sapply(CellRomeR::tracksLS(MigrObj), is.null)]), `[[`, "LABEL") )
@@ -375,6 +442,7 @@ sync.MigrObj <- function(MigrObj) {
   tryCatch(tracks.scaled(MigrObj) <- tracks.scaled(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track scaled")} )
   tryCatch(tracks.meta(MigrObj) <- tracks.meta(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track metadata")} )
   tryCatch(tracks.clusters(MigrObj) <- tracks.clusters(MigrObj)[LABEL %in% track.labels], error = function(e) {print("no track clusters")} )
+  MigrObj <- CellRomeR::DRs.syncL(MigrObj, labels = tracks.labels, type = "T")
   
   edge.labels <- Reduce(intersect, lapply((CellRomeR::edgesLS(MigrObj)[!sapply(CellRomeR::edgesLS(MigrObj), is.null)]), `[[`, "LABEL") )
   if (is.null(edge.labels)) {
@@ -385,5 +453,7 @@ sync.MigrObj <- function(MigrObj) {
   tryCatch(edges.scaled(MigrObj) <- edges.scaled(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge scaled")} )
   tryCatch(edges.meta(MigrObj) <- edges.meta(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge meta")} )
   tryCatch(edges.clusters(MigrObj) <- edges.clusters(MigrObj)[LABEL %in% edge.labels], error = function(e) {print("no edge clusters")} )
+  MigrObj <- CellRomeR::DRs.syncL(MigrObj, labels = edge.labels, type = "E")
+  
   return(MigrObj)
 }
