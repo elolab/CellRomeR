@@ -22,7 +22,7 @@ filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose 
   
   
   if (is.logical(tracks)) {
-    dt.tracks <- copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
+    dt.tracks <- data.table::copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
     strtDim = dim(dt.tracks)
     if (strtDim[1] == length(tracks)) {
       dt.tracks <- dt.tracks[tracks, ]
@@ -33,7 +33,7 @@ filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose 
     
   } else if (!missing(tracks)) {
     # Do positive filtering of tracks by leaving the provided tracks!
-    dt.tracks <- copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
+    dt.tracks <- data.table::copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
     strtDim = dim(dt.tracks)
     dt.tracks <- dt.tracks[LABEL %in% tracks, ]
     tracks.left = dt.tracks[["LABEL"]]
@@ -41,7 +41,7 @@ filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose 
     cat("\nFiltering removed ", strtDim[1]-fltrDim[1], "Tracks.\n\n")
     
   } else {
-    dt.tracks <- copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
+    dt.tracks <- data.table::copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
     cat("\n Argument problem, no filtering done")
     return(MigrObj)
   }
@@ -54,8 +54,8 @@ filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose 
   }
   
   # remove spots and edges with same names as well
-  dt.spots <- copy(slot(object = MigrObj, name = "spots")[[track.slot]] )
-  dt.edges <- copy(slot(object = MigrObj, name = "edges")[[track.slot]] )
+  dt.spots <- data.table::copy(slot(object = MigrObj, name = "spots")[[track.slot]] )
+  dt.edges <- data.table::copy(slot(object = MigrObj, name = "edges")[[track.slot]] )
   
   dt.spots <- dt.spots[TRACK_ID %in% tracks.left, ]
   dt.edges <- dt.edges[TRACK_ID %in% tracks.left, ]
@@ -118,7 +118,7 @@ filter.tracks <- function(MigrObj, filter = NULL, track.slot = "raw", tracks = N
   }
   
   # Filtering test
-  dt.tracks <- copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
+  dt.tracks <- data.table::copy(slot(object = MigrObj, name = "tracks")[[track.slot]] )
   strtDim = dim(dt.tracks)
   dt.tracks <- dt.tracks[eval(fltrExpr), ]
   tracks.left = dt.tracks[["LABEL"]]
@@ -134,8 +134,8 @@ filter.tracks <- function(MigrObj, filter = NULL, track.slot = "raw", tracks = N
   }
   
   # remove spots and edges with same names as well
-  dt.spots <- copy(slot(object = MigrObj, name = "spots")[[track.slot]] )
-  dt.edges <- copy(slot(object = MigrObj, name = "edges")[[track.slot]] )
+  dt.spots <- data.table::copy(slot(object = MigrObj, name = "spots")[[track.slot]] )
+  dt.edges <- data.table::copy(slot(object = MigrObj, name = "edges")[[track.slot]] )
   
   dt.spots <- dt.spots[TRACK_ID %in% tracks.left, ]
   dt.edges <- dt.edges[TRACK_ID %in% tracks.left, ]
@@ -192,8 +192,8 @@ filter.spots <- function(MigrObj, filter, spot.slot = "raw", spots = NULL, propa
     return(NULL)
   }
   
-  # copy spots data.table for filtering
-  dt.spots <- copy(slot(object = MigrObj, name = "spots")[[spot.slot]])
+  # data.table::copy spots data.table for filtering
+  dt.spots <- data.table::copy(slot(object = MigrObj, name = "spots")[[spot.slot]])
   spots.in = dim(dt.spots)[1]
   tracks.in = length(unique(MigrObj@tracks[[spot.slot]][["TRACK_ID"]]))
   
@@ -291,7 +291,7 @@ filter.edges <- function(MigrObj, filter, edge.slot = "raw", edges = NULL, verbo
   }
   
   # Filtering edges
-  dt.edges <- copy(slot(object = MigrObj, name = "edges")[[edge.slot]])
+  dt.edges <- data.table::copy(slot(object = MigrObj, name = "edges")[[edge.slot]])
   edges.lft <- dt.edges[eval(fltrExpr), ][["EDGE_ID"]]
   edges.rmv <- dt.edges[["EDGE_ID"]][!dt.edges[["EDGE_ID"]] %in% edges.lft]
   tracks.rmv <- unique(dt.edges[["TRACK_ID"]][!dt.edges[["EDGE_ID"]] %in% edges.lft])
