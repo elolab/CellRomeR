@@ -322,7 +322,7 @@ init.clustering <- function(MigrObj) {
 #' ### Get data ####
 #' @name getdtcols
 #' 
-getdtcols <- function(MigrObj, dat.slot = "scaled", type = "STE",
+getdtcols <- function(MigrObj, dat.slot = "scaled", type = c("S","T","E"),
                       predef =  "none", vars = NULL, incl.pattern = NULL,
                       excld.pattern = NULL, numerics = TRUE, rnames = FALSE) {
   
@@ -381,7 +381,7 @@ getlabels <- function(MigrObj,  dat.slot = dat.slot, type = type) {
 #### Data fetching functions ####
 #'
 #'
-getdt <- function(MigrObj, dat.slot = "raw", type = "STE") {
+getdt <- function(MigrObj, dat.slot = "raw", type = c("S","T","E")) {
   # arguments parsing
   type = match.arg(type, c("S", "T", "E"))
   # data.slot check!

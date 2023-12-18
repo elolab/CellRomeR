@@ -5,7 +5,7 @@
 \description{Invoke ILoReg clustering on TrackMate data}
 
 \usage{
-clustering(MigrObj, dat.slot = "raw", type = "STE",
+clustering(MigrObj, dat.slot = "raw", type = c("S","T","E"),
             uniq = "base", kILoReg = 0, predef =  "none",
             vars = NULL, incl.pattern = NULL, excld.pattern = NULL,
             scale = TRUE, set.default = TRUE, threads = 0,\dots)
