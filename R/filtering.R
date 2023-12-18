@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose = FALSE, plot = FALSE) {
+filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose = FALSE) {
   
   # slot check!
   track.slot = match.arg(track.slot, slots.in.use(MigrObj)$in.tracks)
@@ -76,11 +76,6 @@ filter.w.tracks <- function(MigrObj, track.slot = "raw", tracks = NULL, verbose 
   #MigrObj <- upd.metadata(MigrObj)
   #MigrObj <- upd.clustering(MigrObj)
   MigrObj <- sync.MigrObj(MigrObj)
-  
-  if (plot) {
-    print(SpotPlotCut(MigrObj, dat.slot = track.slot, feature = NULL, grp = "TRACK_ID",
-                      cut = 0, legend = F, facetting = NULL) )
-  }
   
   return(MigrObj)
   
@@ -236,12 +231,6 @@ filter.spots <- function(MigrObj, filter, spot.slot = "raw", spots = NULL, propa
     #MigrObj <- upd.metadata(MigrObj)
     MigrObj <- sync.MigrObj(MigrObj)
     
-    if (plot) {
-      print(
-        SpotPlotCut(MigrObj, dat.slot = spot.slot, feature = NULL,
-                    grp = "TRACK_ID", cut = 0, legend = F, facetting = NULL)
-      )
-    }
     return(MigrObj)
   } else {
     slot(object = MigrObj, name = "spots")[[spot.slot]] <- dt.spots.fltr
