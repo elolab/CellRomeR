@@ -18,17 +18,17 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   }
   
   # standard variable names we are not interested in
-  StdP = CellRomeR:::Std.pattern(MigrObj)
+  StdP = CellRomeR::Std.pattern(MigrObj)
   
-  data <- CellRomeR:::getdtcols(MigrObj, dat.slot = dat.slot, type = type,
+  data <- CellRomeR::getdtcols(MigrObj, dat.slot = dat.slot, type = type,
                                 predef = predef,
                                 vars = vars, incl.pattern = incl.pattern,
                                 excld.pattern = excld.pattern, numerics = TRUE)
   
   # ILoReg
   mtx = as.matrix(data)
-  rownames(mtx) <- CellRomeR:::getlabels(MigrObj, dat.slot = dat.slot, type = type)
-  scemg <- CellRomeR:::cRomeR.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+  rownames(mtx) <- CellRomeR::getlabels(MigrObj, dat.slot = dat.slot, type = type)
+  scemg <- CellRomeR::cRomeR.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
   
   ILoRegClsts = list()
   for (k in kILoReg) {
