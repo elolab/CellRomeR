@@ -324,6 +324,30 @@ ParseFltr <- function(filter) {
   return(fltr)
 }
 
+
+
+#' @name Apply_TMate_Filter 
+#' 
+#' 
+Apply_TMate_Filter <- function(MigrObj) {
+  # Create True False filter for spots 
+  tm_filter = CellRomeR::tm_track_filter(MigrObj) 
+  # Apply filter 
+  MigrObj <- CellRomeR::filter.tracks(MigrObj, track.slot = "raw", filter = TRACK_ID %in% tm_filter) 
+  return(MigrObj) 
+} 
+
+#' @name rm_unmated_spots
+#'
+#'
+rm_unmated_spots <- function(MigrObj) {
+  # remove "ninTrack" spots, which are non-track assigned spots in the TrackMate xml data. 
+  MigrObj <- CellRomeR::filter.spots(MigrObj, filter = TRACK_ID != "ninTracks", spot.slot = "raw")
+  return(MigrObj)
+}
+
+
+
 #' @name sync.MigrObj
 #'
 #'
