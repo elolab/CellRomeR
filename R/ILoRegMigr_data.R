@@ -343,13 +343,13 @@ getdtcols <- function(MigrObj, dat.slot = "scaled", type = c("S","T","E"),
   # get selected columns
   if (is.null(incl.pattern) & is.null(vars) & predef=="none" ) {
     # standard_varnames exclusion only
-    data = dt.colSpt(dt, excld.pattern = excld.pattern, predef = "none", numerics = numerics)
+    data = dt.colSpt(dt, excld.pattern = excld.pattern, predef = c("none", "technical", "morphological", "morphplus", "clust"), numerics = numerics)
   } else if (is.null(excld.pattern) & is.null(vars) & predef=="none" ) {
     # incl.pattern
-    data = dt.colSpt(dt, excld.pattern = NULL, incl.pattern = incl.pattern, predef = "none", numerics = numerics)
+    data = dt.colSpt(dt, excld.pattern = NULL, incl.pattern = incl.pattern, predef = c("none", "technical", "morphological", "morphplus", "clust"), numerics = numerics)
   } else if (!is.null(excld.pattern) & !is.null(incl.pattern) & is.null(vars) & predef=="none" ) {
     # incl.pattern and exclusion
-    data = dt.colSpt(dt, excld.pattern = excld.pattern, incl.pattern = incl.pattern, predef = "none", numerics = numerics)
+    data = dt.colSpt(dt, excld.pattern = excld.pattern, incl.pattern = incl.pattern, predef = c("none", "technical", "morphological", "morphplus", "clust"), numerics = numerics)
   } else if (is.null(incl.pattern) & is.null(excld.pattern) & predef=="none") {
     # vars
     colz <- vars[vars %in% colnames(dt)]
@@ -429,7 +429,7 @@ slot.usage <- function(MigrDatObj) {
 #' Still think the patterns usage in getting is good working idea. Implementation needs re-thinking. 
 #'
 #' @export
-dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = "none", vars = NULL, numerics = F,
+dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = c("none", "technical", "morphological", "morphplus", "clust"), vars = NULL, numerics = F,
                       StdP = NULL, TechP = NULL, MorphP = NULL, MorphPpos = NULL) {
   `%nin%` <- Negate(`%in%`)
   
