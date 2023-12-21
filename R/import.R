@@ -1,6 +1,6 @@
 import_XML <- function(tmXML, dataset = "MigrDatTestXML",
-                         experiment = "experiment", sample = "sample",
-                         condition = "normal", replicate = NULL, MigrDatObj = NULL){
+                       experiment = "experiment", sample = "sample",
+                       condition = "normal", replicate = NULL, MigrDatObj = NULL){
   if(!(file.exists(tmXML)))
     stop(sprintf("Couldn't find file %s", tmXML))
   ### Timing
@@ -269,6 +269,11 @@ import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   # Conversions now in standardize_dt() function
   dtSxml <- standardize_dt(dtSxml, type = "S")
   
+  # We actually do not want any spurious spots in this version (ninTracks) 
+  # Filtering out the ninTracks from the dtSxml! 
+  dtSxml <- dtSxml[TRACK_ID != "ninTracks",]
+  
+  
   MigrDatXML@spots$raw = dtSxml
   MigrDatXML@IDs$spots = list(LABELs = dtSxml[["LABEL"]], SPOT_IDs = dtSxml[["SPOT_ID"]])
   MigrDatXML@metadata$vars$varsS <- colnames(MigrDatXML@spots$raw)
@@ -279,10 +284,14 @@ import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   #
   #
   # List of ROI_points named with spot LABELs
-  MigrDatXML@roi_points$raw <- getROIpoints_TMxml(TMxml)
+  roi_points <- getROIpoints_TMxml(TMxml)
+  #filter with spot IDS 
+  roi_points <- roi_points[dtSxml$LABEL]
+  
+  MigrDatXML@roi_points$raw <- roi_points
   MigrDatXML@IDs$roi_points = names(MigrDatXML@roi_points$raw)
   
-  # Add roi_point point number to spots data
+  # Add roi_point point length to spots data
   MigrDatXML@spots$raw[["roi_length"]] <- sapply(MigrDatXML@roi_points$raw, length)
   
   #update IDs list (not yet used anywhere)
