@@ -1,6 +1,6 @@
 import_XML <- function(tmXML, dataset = "MigrDatTestXML",
-                       experiment = "experiment", sample = "sample",
-                       condition = "normal", replicate = NULL, MigrDatObj = NULL){
+                         experiment = "experiment", sample = "sample",
+                         condition = "normal", replicate = NULL, MigrDatObj = NULL){
   if(!(file.exists(tmXML)))
     stop(sprintf("Couldn't find file %s", tmXML))
   ### Timing
@@ -290,7 +290,7 @@ import_XML <- function(tmXML, dataset = "MigrDatTestXML",
   
   MigrDatXML@roi_points$raw <- roi_points
   MigrDatXML@IDs$roi_points = names(MigrDatXML@roi_points$raw)
-  
+
   # Add roi_point point length to spots data
   MigrDatXML@spots$raw[["roi_length"]] <- sapply(MigrDatXML@roi_points$raw, length)
   
