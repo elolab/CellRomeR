@@ -38,8 +38,8 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   }
   
   l <- SingleCellExperiment::reducedDims(scemg)
-  MigrObj@dimreductions[[type]][[paste(clust.label, "_UMAP")]] <- l$UMAP
-  MigrObj@dimreductions[[type]][[paste(clust.label, "_TSNE")]] <- l$TSNE
+  MigrObj@dimreductions[[type]][[paste0(clust.label, "_UMAP")]] <- l$UMAP
+  MigrObj@dimreductions[[type]][[paste0(clust.label, "_TSNE")]] <- l$TSNE
   
   for (nm in names(ILoRegClsts)) {
     ILoRegname = paste0(nm, "_", type,"_",clust.label)
