@@ -460,7 +460,8 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = c(
   # Process exclusion patterns to contain standard excluded and given exclusions.
   excld.pattern <- excld.pattern.process(excld.pattern, StdP = StdP)
   
-  predef = match.arg(predef, c("coord","technical", "morphological", "morphplus","clust", "nontechnical", "none"), several.ok = TRUE)
+  #predef = match.arg(predef, c("coord","technical", "morphological", "morphplus","clust", "nontechnical", "none"), several.ok = TRUE)
+  predef = match.arg(predef)
   
   # To initiate data coordinates (dtC), get just XY-coordinates per data type using specific colnmae as check 
   if (any(predef %in% "coord")) {
