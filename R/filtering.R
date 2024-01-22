@@ -331,9 +331,9 @@ ParseFltr <- function(filter) {
 #' 
 Apply_TMate_Filter <- function(MigrObj) {
   # Create True False filter for spots 
-  tm_filter <- MigrObj@metadata$track_filter 
+  tm_filter <-  MigrObj@metadata$track_filter
   # Apply filter 
-  MigrObj <- filter.tracks(MigrObj, track.slot = "raw", filter = TRACK_ID %in% tm_filter) 
+  MigrObj <- filter.tracks(MigrObj, track.slot = "raw", filter = TRACK_ID %in% MigrObj@metadata$track_filter) 
   return(MigrObj) 
 } 
 
