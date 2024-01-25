@@ -114,15 +114,18 @@ setMethod("show",
             cat("Edges available as:", slotz$in.edges,"\n"  )
             cat("Roi_points available as:", slotz$in.roi_points,"\n"  )
             
+            cat("\nDimensional reductions available:",names(object@dimreductions$S) )
+            cat("\nClusterings available:",grep("I[Ll]oReg", colnames(migrdata@clustering$S),value = T) ,"\n" )
             
-            cat("\nDefault PCAs are:", default.PCAs(object)[[1]], default.PCAs(object)[[2]], default.PCAs(object)[[3]] )
-            cat("\nDefault UMAPs are:", default.UMAPs(object)[[1]],default.UMAPs(object)[[2]],default.UMAPs(object)[[3]] )
-            cat("\nDefault UMAP3Ds are:", default.UMAP3Ds(object)[[1]], default.UMAP3Ds(object)[[2]], default.UMAP3Ds(object)[[3]],"\n" )
+            # Plan was to use this slot to store the names, not actual data. Not this prints the whole data. Will comment out for now. 
+            #cat("\nPCAs:", dim(default.PCAs(object)[[1]]))[2] #, default.PCAs(object)[[2]], default.PCAs(object)[[3]] )
+            #cat("\nDefault UMAPs are:", default.UMAPs(object)[[1]],default.UMAPs(object)[[2]],default.UMAPs(object)[[3]] )
+            #cat("\nDefault UMAP3Ds are:", default.UMAP3Ds(object)[[1]], default.UMAP3Ds(object)[[2]], default.UMAP3Ds(object)[[3]],"\n" )
             
-            cat("\nFollowing",length(names(dimreducts(object))), "dimensional reductions are available:\n", names(dimreducts(object)),"\n" )
-            cat("\n",length( names(clusterings(object)) ), "clustering sets with following unique identifiers are available:\n", names(clusterings(object)),"\n\n" )
+            #cat("\nFollowing",length(names(dimreducts(object))), "dimensional reductions are available:\n", names(dimreducts(object)),"\n" )
+            #cat("\n",length( names(clusterings(object)) ), "clustering sets with following unique identifiers are available:\n", names(clusterings(object)),"\n\n" )
             
-            cat("\nDefault clustering is:", default.ILoRegclusters(object)[[1]],"\n")
+            #cat("\nDefault clustering is:", default.ILoRegclusters(object)[[1]],"\n")
             #cat("\nDefault kmeans clustering is:", default.kmeans(object)[[1]],"with", default.kmeans(object)[[2]])
             #cat("\nDefault hclust clustering is:", default.hclusts(object) [[1]],"with", default.hclusts(object)[[2]])
             #cat("\nDefault ILoReg clustering is:", default.ILoRegclusters(object)[[1]],"with", default.ILoRegclusters(object)[[2]] )
@@ -132,8 +135,7 @@ setMethod("show",
             cat(nrow(object@tracks$raw), "tracks with ", ncol(object@tracks$raw),  "variables.\n")
             cat(nrow(object@edges$raw), "edges with ", ncol(object@edges$raw),  "variables.\n")
             cat(nrow(object@spots$raw), "spots with ", ncol(object@spots$raw),  "variables.\n\n")
-            
-            
+
           })
 
 #### Assessors and getters ####
