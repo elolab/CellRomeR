@@ -411,7 +411,6 @@ slots.in.use <- function(MigrDatObj) {
 #' #### slots in MigrObj not NULL function ####
 #'
 #'
-#'
 #' @export
 slot.usage <- function(MigrDatObj) {
   sapply(slotNames(MigrDatObj), function(s) {
@@ -426,7 +425,9 @@ slot.usage <- function(MigrDatObj) {
 #' A complex general data fetcher to be used with various functions using data. 
 #' Tries to handle data fetching for different purposes including clustering and plotting. 
 #' Should be split into smaller and more specific functions. 
-#' Still think the patterns usage in getting is good working idea. Implementation needs re-thinking. 
+#' 
+#' @concept Still think the use of patterns in getting data is a good idea. 
+#' This should be variable parsing first and then just get these from the dt. 
 #'
 #' @export
 dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = c("none", "technical", "morphological", "morphplus", "clust"), vars = NULL, numerics = F,
@@ -440,7 +441,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = c(
     return(dt)
   }
   
-  # Parse exclusion patterns with  "standard_varnames" option
+  # Parse exclusion patterns with "standard_varnames" option
   if (is.null(StdP)) {
     StdP = "^LABEL|^label|ID$|ID[1-9]$|id$|INDEX|^TIME|QUALITY|LOCATION|START|STOP|GAP$|^NUMBER|DURATION|^POSITION|^FRAME|VISIBILITY|LINK_COST|^EDGE_TIME$"
   }
@@ -513,7 +514,7 @@ dt.colSpt <- function(dt, excld.pattern = NULL, incl.pattern = NULL, predef = c(
   } else dtNtch = NULL
   
   # Use inclusion patterns 
-  # There was breakage with use of is.null(excld.pattern) Hence match usage. 
+  # There was breakage with use of is.null(excld.pattern), hence using match. 
   # "NO_EXCLUSION" is from excld.pattern.process parsing. 
   if (!is.null(incl.pattern)  & excld.pattern=="NO_EXCLUSION" ) {
     dtF <- data.table::copy(dt)
