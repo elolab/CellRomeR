@@ -37,9 +37,12 @@ clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
     ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
   }
   
+  # Simplification of DR-sotorage would be like this 
+  MigrObj@dimreductions[[type]] <- SingleCellExperiment::reducedDims(scemg)
+  
   l <- SingleCellExperiment::reducedDims(scemg)
   MigrObj@dimreductions[[type]][[paste0(uniq, "_UMAP")]] <- l$UMAP
-  MigrObj@dimreductions[[type]][[paste0(uniq, "_TSNE")]] <- l$TSNE
+  #MigrObj@dimreductions[[type]][[paste0(uniq, "_TSNE")]] <- l$TSNE
 
   for (nm in names(ILoRegClsts)) {
     ILoRegname = paste0(nm, "_", type,"_",uniq)
@@ -100,10 +103,10 @@ IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
                                     reg.type = reg.type, threads = threads)
   }
 
-  scemg <- ILoReg::RunPCA(scemg, p=50, scale = FALSE)
+  scemg <- ILoReg::RunPCA(scemg, p=25, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
   scemg <- ILoReg::RunUMAP(scemg)
-  scemg <- ILoReg::RunTSNE(scemg)
+  #scemg <- ILoReg::RunTSNE(scemg)
   
   return (scemg)
 
