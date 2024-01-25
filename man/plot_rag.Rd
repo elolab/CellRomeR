@@ -5,11 +5,13 @@
 }
 
 \usage{
-plot_rag(MigrObj)
+plot_rag(MigrObj, clusterType = "ILoRegclusters", feature = NULL)
 }
 
 \arguments{
 \item{MigrObj}{`MigrDat` object}
+\item{clusterType}{Id of the clustering}
+\item{feature}{Feature to sort the data}
 }
 
 
