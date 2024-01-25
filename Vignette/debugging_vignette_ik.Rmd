@@ -55,8 +55,27 @@ The example data is based on the cancer cell migration dataset available in [Zen
 #migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_cells.xml")
 #migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_cells_frames0_25.xml")
 migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_Fltred.xml")
+migrdata 
+
 ```
 
+```{r}
+migrdata <- readRDS("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_Clust_All.Rds")
+migrdata 
+
+migrdata@clustering
+
+CellRomeR:::default.ILoRegclusters(migrdata) 
+CellRomeR:::default.PCAs(migrdata)[[1]] 
+
+names(migrdata@dimreductions$S)
+names(migrdata@clustering$S)
+
+grep("I[Ll]oReg", colnames(migrdata@clustering$S),value = T) 
+
+CellRomeR:::default.ILoRegclusters(migrdata)[[1]]
+
+```
 
 
 ## Filtering 
