@@ -29,7 +29,7 @@ CellRomeR is an R package for the analysis and visualisation of cell tracking da
 
 CellRomeR is available on Github. It can be installed using devtools and the following commands
 
-```{r installation}
+```{r installation, eval=FALSE, include=FALSE}
 #install.packages("devtools")
 #devtools:install_github("elolab/cellromer")
 ```
@@ -51,11 +51,12 @@ The example data is based on the cancer cell migration dataset available in [Zen
 
 
 ```{r TMxml}
-#migrdata <- import_XML("../data/P31-crop_ik.xml")
-migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_cells.xml")
-migrdata
-
+#migrdata <- import_XML("P31-crop_ik.xml")
+#migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_cells.xml")
+#migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_cells_frames0_25.xml")
+migrdata <- import_XML("~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_Fltred.xml")
 ```
+
 
 
 ## Filtering 
@@ -65,20 +66,83 @@ Unfortunately is still needed.
 - TrackMate extra spots 
 - Short tracks 
 
+
 ```{r filtering}
 
-# removes orphan spots from raw imported data. 
-CellRomeR:::Apply_TMate_Filter(migrdata)
-CellRomeR:::rm_unmated_spots(migrdata)
+#CellRomeR:::tm_track_filter(migrdata) 
+#migrdata@metadata$track_filter
+
+#migrdata <- CellRomeR:::rm_unmated_spots(migrdata) 
+
+#tm_filter <- migrdata@metadata$track_filter 
+#migrdata <- CellRomeR:::filter.tracks(migrdata, track.slot = "raw", filter = TRACK_ID %in% tm_filter) 
+
+#migrdata <- CellRomeR:::filter.spots(migrdata, filter = TRACK_ID != "ninTracks", spot.slot = "raw") 
+#CellRomeR:::tm_track_filter(migrdata)
+plot(migrdata)
+#print(CellRomeR:::spots.raw(migrdata))
+#table(CellRomeR:::spots.raw(migrdata)[["TRACK_ID"]])
+
+migrdata <- CellRomeR:::Apply_TMate_Filter(migrdata) 
+
+plot(migrdata)
+
 
 
 ```
 
 
+## Clustering with selected features  
+
+```{r varselection}
+
+CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars
+clustering.vars <- CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12,13,22:31,33)] 
+
+head(migrdata@spots$raw)
+
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_most", kILoReg = 5, vars = clustering.vars) 
+plot_umap(migrdata, uniq="by_most")
+
+saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_ClustWMost.Rds")
+
+clustering.vars <- CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12:17,20:31,33)] 
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_all", kILoReg = 5, vars = clustering.vars) 
+plot_umap(migrdata, uniq="by_all")
+
+saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_Clust_All.Rds")
+
+```
+
+
+## Clustering with predefined features  
+
 ```{r clustering}
 
-migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", clust.label = "morphS", kILoReg = 5, 
-                       predef = "morphological", scale = TRUE)
+CellRomeR:::Std.pattern(migrdata)
+#CellRomeR:::default.DRs(migrdata)
+
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_morph", kILoReg = 5, predef = "morphological") 
+
+#plot_tsne(migrdata, uniq="by_morph") 
+plot_umap(migrdata, uniq="by_morph") 
+
+saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_morpClust.Rds")
+
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_tech", kILoReg = 5, predef = "technical") 
+plot_umap(migrdata, uniq="by_tech") 
+
+saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_techClust.Rds")
+
+
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "CH1", kILoReg = 8, incl.pattern = "CH1", predef = "none") 
+
+plot_umap(migrdata, uniq="CH1") 
+
+saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_CH1_Clust.Rds")
+
+
+
 
 ```
 
@@ -90,7 +154,12 @@ plot(migrdata)
 plot_rag(migrdata)
 plot_heatmap(migrdata)
 plot_violin(migrdata, feature="QUALITY")
-plot_tsne(migrdata, uniq="morphS")
+
+plot_umap(migrdata, uniq="by_all") # clustering from CH1 
+plot_umap(migrdata, uniq="by_most") # clustering from CH1 
+plot_umap(migrdata, uniq="by_morph") # clustering from CH1 
+plot_umap(migrdata, uniq="CH1") # clustering from CH1 
+plot_umap(migrdata, uniq="by_tech") # clustering from CH1
 
 
 
