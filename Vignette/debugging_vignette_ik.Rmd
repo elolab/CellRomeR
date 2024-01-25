@@ -69,19 +69,19 @@ Unfortunately is still needed.
 
 ```{r filtering}
 
-#CellRomeR:::tm_track_filter(migrdata) 
+#CellRomeR::tm_track_filter(migrdata) 
 #migrdata@metadata$track_filter
 
-#migrdata <- CellRomeR:::rm_unmated_spots(migrdata) 
+#migrdata <- CellRomeR::rm_unmated_spots(migrdata) 
 
 #tm_filter <- migrdata@metadata$track_filter 
-#migrdata <- CellRomeR:::filter.tracks(migrdata, track.slot = "raw", filter = TRACK_ID %in% tm_filter) 
+#migrdata <- CellRomeR::filter.tracks(migrdata, track.slot = "raw", filter = TRACK_ID %in% tm_filter) 
 
-#migrdata <- CellRomeR:::filter.spots(migrdata, filter = TRACK_ID != "ninTracks", spot.slot = "raw") 
-#CellRomeR:::tm_track_filter(migrdata)
+#migrdata <- CellRomeR::filter.spots(migrdata, filter = TRACK_ID != "ninTracks", spot.slot = "raw") 
+#CellRomeR::tm_track_filter(migrdata)
 plot(migrdata)
-#print(CellRomeR:::spots.raw(migrdata))
-#table(CellRomeR:::spots.raw(migrdata)[["TRACK_ID"]])
+#print(CellRomeR::spots.raw(migrdata))
+#table(CellRomeR::spots.raw(migrdata)[["TRACK_ID"]])
 
 migrdata <- Apply_TMate_Filter(migrdata) 
 
@@ -96,8 +96,10 @@ plot(migrdata)
 
 ```{r varselection}
 
-CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars
-clustering.vars <- CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12,13,22:31,33)] 
+# CellRomeR::MigrObj.vars.raw(migrdata)$spot.vars
+# clustering.vars <- CellRomeR::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12,13,22:31,33)] 
+
+clustering.vars <- colnames(migrdata@spots$raw)[c(10,12,13,22:31,33)] 
 
 head(migrdata@spots$raw)
 
@@ -106,7 +108,9 @@ plot_umap(migrdata, uniq="by_most")
 
 saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_ClustWMost.Rds")
 
-clustering.vars <- CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12:17,20:31,33)] 
+#clustering.vars <- CellRomeR::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12:17,20:31,33)] 
+clustering.vars <- colnames(migrdata@spots$raw)[c(10,12:17,20:31,33)] 
+
 migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_all", kILoReg = 8, vars = clustering.vars) 
 plot_umap(migrdata, uniq="by_all")
 
@@ -120,8 +124,8 @@ saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose
 
 ```{r clustering}
 
-CellRomeR:::Std.pattern(migrdata)
-#CellRomeR:::default.DRs(migrdata)
+# CellRomeR::Std.pattern(migrdata)
+#CellRomeR::default.DRs(migrdata)
 
 migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_morph", kILoReg = 5, predef = "morphological") 
 
