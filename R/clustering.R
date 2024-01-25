@@ -1,6 +1,6 @@
 #### Main clustering function ####
 
-clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
+clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
                               uniq = "base",
                               kILoReg = 0,
                               predef =  c("none","morphological","morphplus","technical"),
@@ -62,7 +62,7 @@ clustering <- function(MigrObj, dat.slot = "raw", type = "STE",
 IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
                              K = 15, d = 0.3, r = 500, C = 0.3,
                              icp.batch.size = 4000,
-                             reg.type = "L1", threads = 0, type = "STE") {
+                             reg.type = "L1", threads = 0, type = c("S", "T", "E")) {
 
   if (scale) {
     mtx = scale(mtx)
