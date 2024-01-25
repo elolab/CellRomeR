@@ -83,7 +83,7 @@ plot(migrdata)
 #print(CellRomeR:::spots.raw(migrdata))
 #table(CellRomeR:::spots.raw(migrdata)[["TRACK_ID"]])
 
-migrdata <- CellRomeR:::Apply_TMate_Filter(migrdata) 
+migrdata <- Apply_TMate_Filter(migrdata) 
 
 plot(migrdata)
 
@@ -107,10 +107,11 @@ plot_umap(migrdata, uniq="by_most")
 saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_ClustWMost.Rds")
 
 clustering.vars <- CellRomeR:::MigrObj.vars.raw(migrdata)$spot.vars[c(10,12:17,20:31,33)] 
-migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_all", kILoReg = 5, vars = clustering.vars) 
+migrdata <- clustering(migrdata, dat.slot = "raw", type = "S", uniq = "by_all", kILoReg = 8, vars = clustering.vars) 
 plot_umap(migrdata, uniq="by_all")
 
 saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_Clust_All.Rds")
+
 
 ```
 
@@ -142,7 +143,7 @@ plot_umap(migrdata, uniq="CH1")
 saveRDS(migrdata, "~/Spatial_Migration/Ext_data/1_Random_migration_HeLa_Cellpose_LapT_CH1_Clust.Rds")
 
 
-
+migrdata@clustering
 
 ```
 
