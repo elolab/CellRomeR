@@ -115,7 +115,7 @@ setMethod("show",
             cat("Roi_points available as:", slotz$in.roi_points,"\n"  )
             
             cat("\nDimensional reductions available:",names(object@dimreductions$S) )
-            cat("\nClusterings available:",grep("I[Ll]oReg", colnames(migrdata@clustering$S),value = T) ,"\n" )
+            cat("\nClusterings available:",grep("I[Ll]oReg", colnames(object@clustering$S),value = T) ,"\n" )
             
             # Plan was to use this slot to store the names, not actual data. Not this prints the whole data. Will comment out for now. 
             #cat("\nPCAs:", dim(default.PCAs(object)[[1]]))[2] #, default.PCAs(object)[[2]], default.PCAs(object)[[3]] )
