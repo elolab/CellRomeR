@@ -22,3 +22,5 @@ importFrom("grDevices", "colorRampPalette")
   importFrom("stats", "cutree", "dist", "heatmap", "kmeans", "median",
              "sd")
 importFrom("utils", "type.convert")
+importFrom("grDevices", "adjustcolor")
+importFrom("graphics", "pie")
