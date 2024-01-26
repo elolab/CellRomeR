@@ -13,7 +13,7 @@ plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL) {
   if (!is.null(feature)){
     dat$features <- track_dat[[feature]][match(dat$TRACK_ID, track_dat$LABEL)]
     dat$combinedID <- paste0(dat$features, " | ", dat$TRACK_ID)
-    xlabel = paste0("CombinedID of ", feature, " and TRACK_ID")
+    xlabel = paste0("Tracks ordered based on ", feature)
   } else {
     dat$features = dat$TRACK_ID
     dat$combinedID = dat$TRACK_ID
@@ -27,9 +27,10 @@ plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL) {
   
   
   
-  ggplot2::ggplot(data = dat, mapping = ggplot2::aes_string(x = "combinedID", y = "FRAME", color = "clusters")) +
-    ggplot2::scale_color_manual(values = clst.cols) +
-    ggplot2::geom_point(size = 1, shape = 15) + ggplot2::labs(x=xlabel) +
+  ggplot2::ggplot(data = dat, mapping = ggplot2::aes_string(x = "combinedID", y = "FRAME", fill= "clusters", col = "clusters")) +
+    ggplot2::scale_fill_manual(values = clst.cols) + ggplot2::scale_color_manual(values = clst.cols) +
+    ggplot2::scale_y_reverse() +
+    ggplot2::geom_tile(color="black") + ggplot2::labs(x=xlabel) +
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'black', colour = 'grey'),
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank())
