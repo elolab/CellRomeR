@@ -11,6 +11,9 @@ plot_umap(MigrObj, uniq=NULL)
 \arguments{
 \item{MigrObj}{`MigrDat` object}
 \item{uniq}{Identifier for clustering}
+\item{color.by}{Variable to color dots}
+\item{spots.slot}{Spots slot data}
+\item{point.size}{Point size of dots}
 }
 
 
