@@ -11,7 +11,7 @@ S3method(plot, MigrDat)
 importFrom(data.table, ":=","copy","setorder","set","rbindlist","data.table")
 importFrom(XML,"xmlGetAttr","getNodeSet","xmlParse","xpathSApply")
 importFrom(xml2,"read_xml","xml_text","xml_find_all")
-importFrom(ggplot2,"ggplot","aes_string","scale_color_manual","geom_point","labs",
+importFrom(ggplot2,"ggplot","aes_string","scale_color_manual","geom_point","geom_tile","labs",
            "theme","element_rect","element_blank","scale_fill_manual","geom_violin",
            "theme_classic")
 importFrom(pals,"alphabet")
@@ -24,3 +24,4 @@ importFrom("grDevices", "colorRampPalette")
 importFrom("utils", "type.convert")
 importFrom("grDevices", "adjustcolor")
 importFrom("graphics", "pie")
+importFrom("pheatmap", "pheatmap")
