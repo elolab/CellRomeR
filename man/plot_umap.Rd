@@ -5,7 +5,7 @@
 }
 
 \usage{
-plot_umap(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.slot="raw", point.size=1)
+plot_umap(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.slot="raw", cex=0.1)
 }
 
 \arguments{
@@ -13,7 +13,7 @@ plot_umap(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.slot="raw", p
 \item{uniq}{Identifier for clustering}
 \item{color.by}{Variable to color dots}
 \item{spots.slot}{Spots slot data}
-\item{point.size}{Point size of dots}
+\item{cex}{Point size of dots}
 }
 
 
