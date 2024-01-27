@@ -1,7 +1,7 @@
 #### Main clustering function ####
 
 clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
-                              uniq = "IloReg",
+                              uniq = "ILoReg",
                               kILoReg = 0,
                               predef =  c("none","morphological","morphplus","technical"),
                               vars = NULL, incl.pattern = NULL,

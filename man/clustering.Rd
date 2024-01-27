@@ -6,7 +6,7 @@
 
 \usage{
 clustering(MigrObj, dat.slot = "raw", type = c("S","T","E"),
-            uniq = "IloReg", kILoReg = 0, predef =  c("none", "morphological", "morphplus", "technical"),
+            uniq = "ILoReg", kILoReg = 0, predef =  c("none", "morphological", "morphplus", "technical"),
             vars = NULL, incl.pattern = NULL, excld.pattern = NULL,
             scale = TRUE, set.default = TRUE, threads = 0,\dots)
 }
