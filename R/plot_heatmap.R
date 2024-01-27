@@ -1,18 +1,18 @@
 
-plot_heatmap <- function(MigrObj, feature_vector=NULL) {
+plot_heatmap <- function(MigrObj, features=NULL) {
   
   if (length(unique(MigrObj@clustering$S$ILoRegclusters))==1) {
     stop("No clustering data available. Please run the clustering first.")
   }
-  if (!is.null(feature_vector) && all(feature_vector %in% which(sapply(MigrObj@spots$raw, typeof)=="double" | sapply(MigrObj@spots$raw, typeof)=="integer"))) {
+  if (!is.null(features) && all(features %in% which(sapply(MigrObj@spots$raw, typeof)=="double" | sapply(MigrObj@spots$raw, typeof)=="integer"))) {
     stop("Please select a numeric column")
   }
   
   clusters <- unique(MigrObj@clustering$S$ILoRegclusters)
-  if(length(feature_vector) == 0){
+  if(length(features) == 0){
     markers <- which(sapply(MigrObj@spots$raw, typeof)=="double" | sapply(MigrObj@spots$raw, typeof)=="integer")
   } else {
-    markers = feature_vector  
+    markers = features  
   }
   
   

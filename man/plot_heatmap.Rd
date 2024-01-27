@@ -5,11 +5,12 @@
 }
 
 \usage{
-plot_heatmap(MigrObj)
+plot_heatmap(MigrObj, features=NULL)
 }
 
 \arguments{
 \item{MigrObj}{`MigrDat` object}
+\item{features}{Vector of features to plot}
 }
 
 

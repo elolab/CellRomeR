@@ -5,7 +5,7 @@
 }
 
 \usage{
-plot_umap(MigrObj, uniq=NULL)
+plot_umap(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.slot="raw", point.size=1)
 }
 
 \arguments{
