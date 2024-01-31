@@ -21,7 +21,7 @@ plot_heatmap <- function(MigrObj, features=NULL) {
   data.heatmap <- data.heatmap[which(apply(data.heatmap,1,sd)>0),]
   
   breaks <- seq(-2, 2, by=0.1)
-  col <- colorRampPalette(c("darkmagenta", "white", "royalblue"))(length(breaks)-1)
+  col <- colorRampPalette(c("#FCB317", "white", "#AB1F91"))(length(breaks)-1)
   
   pheatmap::pheatmap(data.heatmap, scale="row", col=col, breaks=breaks)
 
