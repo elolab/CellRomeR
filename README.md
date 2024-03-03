@@ -35,6 +35,7 @@ The example data is based on the cancer cell migration dataset available in [Zen
 
 ``` R
 migrdata <- import_XML("P31-crop_nb.xml")
+migrdata <- Apply_TMate_Filter(migrdata)
 ```
 
 ##### `MigrDat` data object
@@ -54,7 +55,7 @@ The data is stored in a MigrDat object which has the following slots:
 The function `clustering()` can be used to run dimensionality reduction and clustering. The clustering is based on ILoReg [2], an ensembl clustering method developed for clustering of single-cell RNA-sequencing data. The argument `uniq` is used to store the clustering result with a unique identifier for later identification. NOTE! Clustering may take several minutes depending on the size of the data and computational resources.
 
 ``` R
-migrdata <- clustering(MigrObj=migrdata, dat.slot="raw", type="S", incl.pattern=c("CH1"), uniq="CH1_15", kILoReg=15)
+migrdata <- clustering(MigrObj=migrdata, dat.slot="raw", type="S", vars=features, kILoReg=5)
 ```
 
 The clustering above was done for Spot (S) type only, but by adjusting the `type` parameter we can also do this for Tracks (T) and Edges (E).
@@ -65,9 +66,11 @@ cellRomeR includes several plotting options. The `plot` function plots the traje
 
 ``` R
 plot(migrdata)
+plot_umap(migrdata)
+plot_pie(migrdata)
 plot_heatmap(migrdata)
-plot_violin(migrdata, feature="QUALITY")
-plot_tsne(migrdata, uniq="CH1_15")
+plot_violin(migrdata, feature="CIRCULARITY")
+plot_rag(migrdata)
 ```
 
 #### Citations
