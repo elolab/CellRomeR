@@ -5,13 +5,14 @@
 }
 
 \usage{
-plot_rag(MigrObj, clusterType = "ILoRegclusters", feature = NULL)
+plot_rag(MigrObj, clusterType = "ILoRegclusters", feature = NULL, decreasing = FALSE)
 }
 
 \arguments{
 \item{MigrObj}{`MigrDat` object}
 \item{feature}{Numeric feature from the tracks table to be combined with TRACK_ID to create a new identifier for sorting the data}
 \item{clusterType}{Type of clustering to use}
+\item{decreasing}{Boolean parameter to select the direction of the plot}
 }
 
 

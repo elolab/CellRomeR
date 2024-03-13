@@ -1,4 +1,4 @@
-plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL) {
+plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL, decreasing = FALSE) {
   if (length(unique(MigrObj@clustering$S))==1) {
     stop("No clustering data available. Please run the clustering first.")
   }
@@ -20,14 +20,14 @@ plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL) {
     xlabel = "TRACK_ID"
   }
   dat$clusters <- clusterings(MigrObj)[["S"]][[clusterType]]
-  ragplot_data <- dat[order(features, TRACK_ID),]
-  
-  clst.cols <- colorRampPalette(c("#3C95AC", "#E756A7", "#FFCB8A"))(length(unique(dat$clusters)))
-  
-  
+  ragplot_data <- dat[order(features, TRACK_ID, decreasing = !decreasing),]
+  ragplot_data$combinedID <- factor(ragplot_data$combinedID, levels=unique(ragplot_data$combinedID), ordered=TRUE)
+  clst.cols <- colorRampPalette(c("#3C95AC", "#E756A7", "#FFCB8A"))(length(unique(ragplot_data$clusters)))
   
   
-  ggplot2::ggplot(data = dat, mapping = ggplot2::aes_string(x = "combinedID", y = "FRAME", fill= "clusters", col = "clusters")) +
+  
+  
+  ggplot2::ggplot(data = ragplot_data, mapping = ggplot2::aes_string(x = "combinedID", y = "FRAME", fill= "clusters", col = "clusters")) +
     ggplot2::scale_fill_manual(values = clst.cols) + ggplot2::scale_color_manual(values = clst.cols) +
     ggplot2::scale_y_reverse() +
     ggplot2::geom_tile(color="black") + ggplot2::labs(x=xlabel) +
