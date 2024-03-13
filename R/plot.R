@@ -1,4 +1,4 @@
-plot.MigrDat <- function(x, ...) {
+plot.MigrDat <- function(x, cex=1, ...) {
   
   n <- length(unique(x@clustering$S$ILoRegclusters))
   colors <- colorRampPalette(c("#3C95AC","#E756A7","#FFCB8A"))(n)[x@clustering$S$ILoRegclusters]
@@ -16,8 +16,8 @@ plot.MigrDat <- function(x, ...) {
     sel <- which(x@spots$raw$TRACK_ID[ord]==track)
     sel.a <- sel[-length(sel)]
     sel.b <- sel[length(sel)]
-    points(x.coords[ord][sel.a], y.coords[ord][sel.a], pch=21, col=adjustcolor(colors[ord][sel.a], offset=c(-0.3, -0.3, -0.3, 0)), bg=colors[ord][sel.a], cex=0.1)
-    points(x.coords[ord][sel.b], y.coords[ord][sel.b], pch=21, col=adjustcolor(colors[ord][sel.b], offset=c(-0.3, -0.3, -0.3, 0)), bg=colors[ord][sel.b], cex=0.5)
+    points(x.coords[ord][sel.a], y.coords[ord][sel.a], pch=21, col=adjustcolor(colors[ord][sel.a], offset=c(-0.3, -0.3, -0.3, 0)), bg=colors[ord][sel.a], cex=0.5*cex)
+    points(x.coords[ord][sel.b], y.coords[ord][sel.b], pch=21, col=adjustcolor(colors[ord][sel.b], offset=c(-0.3, -0.3, -0.3, 0)), bg=colors[ord][sel.b], cex=cex)
   }
   
 }
