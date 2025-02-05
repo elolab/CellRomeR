@@ -2,7 +2,7 @@
 
 clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
                               uniq = "ILoReg",
-                              kILoReg = 0,
+                              kILoReg = 5,
                               predef =  c("none","morphological","morphplus","technical"),
                               vars = NULL, incl.pattern = NULL,
                               excld.pattern = NULL,
@@ -28,7 +28,8 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
   # ILoReg
   mtx = as.matrix(data)
   rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
-  scemg <- IRMigr.ILoReg(mtx, kILoReg = kILoReg, type = type, threads = threads, scale = scale, ...)
+  scemg <- IRMigr.ILoReg(mtx, K = max(kILoReg), type = type, threads = threads, 
+                         scale = scale, icp.batch.size = ceiling(nrow(mtx)/4), ...)
 
   ILoRegClsts = list()
   for (k in kILoReg) {
@@ -59,10 +60,11 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
 
 #### Individual clustering functions ####
 
-IRMigr.ILoReg <- function(mtx, kILoReg, scale=TRUE, seed = 1917, L = 50,
-                             K = 15, d = 0.3, r = 500, C = 0.3,
-                             icp.batch.size = 4000,
-                             reg.type = "L1", threads = 0, type = c("S", "T", "E")) {
+IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
+                          K = 5, d = 0.3, r = 10, C = 0.3,
+                          icp.batch.size = 1000,
+                          reg.type = "L1", threads = 0, 
+                          type = c("S", "T", "E")) {
 
   if (scale) {
     mtx = scale(mtx)
