@@ -108,7 +108,7 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
   scemg <- ILoReg::RunPCA(scemg, p=25, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
   # Faster implementation of the UMAP 
-  reducedDim(scemg, "UMAP") <- uwot::umap(X = reducedDim(scemg, "PCA"))
+  SingleCellExperiment::reducedDim(scemg, "UMAP") <- uwot::umap(X = SingleCellExperiment::reducedDim(scemg, "PCA"))
   # scemg <- ILoReg::RunUMAP(scemg)
   # scemg <- ILoReg::RunTSNE(scemg)
   

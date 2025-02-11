@@ -1,7 +1,7 @@
 Package: CellRomeR
 Type: Package
 Title: R package for phenotypic clustering of cell migration from microscopy data
-Version: 0.1.0
+Version: 0.1.1
 Author: Iivari Kleino, Laura L. Elo
 Maintainer: MBC <mbc@utu.fi>
 Description: Phenotypic clustering of cells based on their morphological and motility features from microscopy images. Utilizing advanced machine learning techniques and building on an iterative clustering projection method, CellRomeR offers a new approach to identify heterogeneity in cell populations.
