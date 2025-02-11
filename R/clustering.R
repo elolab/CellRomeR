@@ -65,38 +65,38 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
                           icp.batch.size = 1000,
                           reg.type = "L1", threads = 0, 
                           type = c("S", "T", "E")) {
-
+  
   if (scale) {
     mtx = scale(mtx)
   }
-
+  
   #ILoRegClsts = data.frame()
   ILoRegClsts = list()
   vars = colnames(mtx)
-
+  
   # Get rid of sce-object later
   scemg = SingleCellExperiment::SingleCellExperiment(assays = list(logcounts = t(mtx)))
   scemg <- ILoReg::PrepareILoReg(scemg)
   scemg@metadata$iloreg$vars = vars
-
+  
   if (is.numeric(seed)) {
     set.seed(seed)
   }
-
+  
   if (type %in% c("S","E")) {
     scemg <- ILoReg::RunParallelICP(object = scemg, k = K,
                                     d = d, L = L,
                                     r = r, C = C,
                                     icp.batch.size = icp.batch.size,
                                     reg.type = reg.type, threads = threads)
-
+    
   } else if (type == "T") {
     scemg <- ILoReg::RunParallelICP(object = scemg, k = K,
                                     d = d, L = L,
                                     r = r, C = C,
                                     icp.batch.size = Inf,
                                     reg.type = reg.type, threads = threads)
-
+    
   } else {
     scemg <- ILoReg::RunParallelICP(object = scemg, k = K,
                                     d = d, L = L,
@@ -104,15 +104,18 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
                                     icp.batch.size = icp.batch.size,
                                     reg.type = reg.type, threads = threads)
   }
-
+  
   scemg <- ILoReg::RunPCA(scemg, p=25, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
-  scemg <- ILoReg::RunUMAP(scemg)
-  #scemg <- ILoReg::RunTSNE(scemg)
+  # Faster implementation of the UMAP 
+  reducedDim(scemg, "UMAP") <- uwot::umap(X = reducedDim(scemg, "PCA"))
+  # scemg <- ILoReg::RunUMAP(scemg)
+  # scemg <- ILoReg::RunTSNE(scemg)
   
   return (scemg)
-
+  
 }
+
 
 IRMigr.kmeansX <- function(mtx, kmeans, scale = FALSE) {
 
