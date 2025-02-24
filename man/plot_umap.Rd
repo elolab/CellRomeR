@@ -10,22 +10,20 @@ spots.slot="raw", cex=0.1,use.opinionated.layout = TRUE)
 }
 
 \arguments{
-\item{MigrObj}{`MigrDat` object}
-\item{uniq}{A label given to it by the \code{uniq} parameter in the \link{\code{clustering}} Metod  }
-\item {color.by}{Indicates the field to color the dots by, either a
-  column name of the trackmate spots/edges/tracks data, or one of
-  \code{ILoReg<K>_<uniq>_<type>}
+\item{MigrObj}{MigrDat object}
+\item{uniq}{A label given to it by the \code{uniq} parameter in the \link{\code{clustering}} Method}
+\item{color.by}{Indicates the field to color the dots by, either a
+  column name of the trackmate spots, edges, tracks data, or one of
+   \code{ILoReg<K>_<uniq>_<type>}
   where \code{<K>} is a kILoReg parameter given to
   \link{\code{clustering}}, and \code{<uniq>} and \code{<type>} are as
   in that function.
   Alterinatively, leave to the default to use the value of clustering
   that was set as the default.
 }
-\item{spots.slot}{Spots slot data,as in dat.slot in
-  \link{\code{clustering}}, currently should be left unchanged}
+\item{spots.slot}{Spots slot data,as in dat.slot in \link{\code{clustering}}, currently should be left unchanged}
 \item{cex}{Point size of dots}
-\item(use.opinionated.layout} {Whether or not to use the more
-spaceconsuming layout}
+\item{use.opinionated.layout}{Whether or not to use the more spaceconsuming layout}
 }
 
 

@@ -18,7 +18,8 @@ clustering(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   \item{type}{One of S,T,E for \emph{S}pots, \emph{T}racks, or
   \emph{E}dges, which to cluster one.}
   \item{uniq}{An Identifier for this clustering for later functions.}
-  \item{kILoReg}{Initial number of cluster for ILoReg, can be length \gt 1}
+  \item{kILoReg}{Initial number of cluster for ILoReg, can be length
+  greather than 1}
   \item{predef}{Set to one of \code{morphological},\code{morphplus},
   \code{technical} to select these clustering, see see \dQuote{TrackMate Column Selection}}
   \item{vars}{A character vector of Trackmate data columnnames to select
@@ -29,7 +30,7 @@ clustering(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   \item{scale}{Whether or not to \code{\link{scale}} the data before clustering.}
   \item{set.default}{Whether or not to set the default clustering to this result. (default TRUE)}
   \item{threads}{Number of threads (default 0, i.e. all available)}
-  \item{\dots}{Additional arguments passed to \code{\link[ILoReg]{RunParallelICP}}
+  \item{\dots}{Additional arguments passed to \code{\link[ILoReg]{RunParallelICP}}}}
 \details{
   \subsection{TrackMate Column Selection}
   The arguments \code{predef},\code{inc.pattern},
