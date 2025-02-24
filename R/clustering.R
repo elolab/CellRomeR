@@ -74,7 +74,10 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
                           K = 5, d = 0.3, r = 10, C = 0.3,
                           icp.batch.size = 1000,
                           reg.type = "L1", threads = 0, 
-                          type = c("S", "T", "E")) {
+                          type = c("S", "T", "E"),
+                          # the `p` parameter for ILOreg::runPCA
+                          # for testing purpopses
+                          p = 25) {
   
   if (scale) {
     mtx = scale(mtx)
@@ -116,7 +119,7 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
                                     reg.type = reg.type, threads = threads)
   }
   
-  scemg <- ILoReg::RunPCA(scemg, p=25, scale = FALSE)
+  scemg <- ILoReg::RunPCA(scemg, p=p, scale = FALSE)
   scemg <- ILoReg::HierarchicalClustering(scemg)
   # Faster implementation of the UMAP 
   SingleCellExperiment::reducedDim(scemg, "UMAP") <- uwot::umap(X = SingleCellExperiment::reducedDim(scemg, "PCA"))
