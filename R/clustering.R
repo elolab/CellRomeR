@@ -37,15 +37,14 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
   rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
   scemg <- IRMigr.ILoReg(mtx, K = max(kILoReg), type = type, threads = threads, 
                          scale = scale, icp.batch.size = ceiling(nrow(mtx)/4), ...)
-
-  ILoRegClsts = list()
-  for (k in kILoReg) {
-    scemg <- ILoReg::SelectKClusters(scemg, K=k)
-    ilonm = paste0("IloRegK",k)
-    ILoRegClsts[[ilonm]] = scemg@metadata$iloreg$clustering.manual
-  }
-  
-  # Simplification of DR-sotorage would be like this 
+  ILoRegClsts <-
+    Map(function(k)
+      ILoReg::SelectKClusters(scemg, K=k)@metadata$iloreg$clustering.manual,
+      kILoReg)
+  names(ILoRegClsts) <- sprintf("IloRegK%d",kILoReg)
+      
+      
+  # Simplification of DR-storage would be like this 
   MigrObj@dimreductions[[type]] <- SingleCellExperiment::reducedDims(scemg)
   
   l <- SingleCellExperiment::reducedDims(scemg)
