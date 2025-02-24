@@ -41,6 +41,7 @@ combine_patterns <- function(patterns = "", logic = c("OR","AND"), custom = NULL
     patterns <- paste(patterns, collapse="|")
     return(patterns)
   }
+  
   if (logic == "AND" & exacts) {
     print("Not yet implemented!")
   }

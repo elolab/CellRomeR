@@ -9,16 +9,19 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
                               scale = TRUE, 
                               set.default = TRUE, threads = 0,...) {
   stopifnot(kILoReg > 0)
+  
 
   # set thread count
   if (threads==0) {
-    threads=parallel::detectCores()
+    threads <- parallel::detectCores()
   }
 
   predef <- match.arg(predef)
+  type <- match.arg(type)
 
   # standard variable names we are not interested in
-  StdP = Std.pattern(MigrObj)
+  StdP <- Std.pattern(MigrObj)
+  
 
   data <- getdtcols(MigrObj, dat.slot = dat.slot, type = type,
                     predef = predef,
@@ -26,7 +29,7 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
                     excld.pattern = excld.pattern, numerics = TRUE)
 
   # ILoReg
-  mtx = as.matrix(data)
+  mtx <- as.matrix(data)
   rownames(mtx) <- getlabels(MigrObj, dat.slot = dat.slot, type = type)
   scemg <- IRMigr.ILoReg(mtx, K = max(kILoReg), type = type, threads = threads, 
                          scale = scale, icp.batch.size = ceiling(nrow(mtx)/4), ...)
@@ -69,6 +72,7 @@ IRMigr.ILoReg <- function(mtx, scale=TRUE, seed = 1917, L = 50,
   if (scale) {
     mtx = scale(mtx)
   }
+  type <- match.arg(type)
   
   #ILoRegClsts = data.frame()
   ILoRegClsts = list()
