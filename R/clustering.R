@@ -27,6 +27,10 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
                     predef = predef,
                     vars = vars, incl.pattern = incl.pattern,
                     excld.pattern = excld.pattern, numerics = TRUE)
+  if(any(dim(data) == 0))
+    stop(sprintf("Did not select columns from the %s table,consider changing one of `predef`, `incl.pattern`,`vars`,excld.pattern`", switch(type, S  = "Spots", E = "Edges", T = "Tracks")))
+  
+    
 
   # ILoReg
   mtx <- as.matrix(data)
@@ -53,6 +57,9 @@ clustering <- function(MigrObj, dat.slot = "raw", type = c("S", "T", "E"),
     MigrObj@clustering[[type]][[ILoRegname]] <- ILoRegClsts[[nm]]
   }
   if (set.default) {
+    if(length(ILoRegClsts) > 1)
+      warning(sprintf("More than one clustering, setting default to = %s", ILoRegname))
+    
     MigrObj@clustering[[type]][["ILoRegclusters"]] <- ILoRegClsts[[nm]]
     default.kmeans(MigrObj)[[type]] <- ILoRegname
   }
