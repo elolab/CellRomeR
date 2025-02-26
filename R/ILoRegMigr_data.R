@@ -363,14 +363,14 @@ getdtcols <- function(MigrObj, dat.slot = "scaled", type = c("S","T","E"),
   return(data)
 }
 
-getlabels <- function(MigrObj,  dat.slot = dat.slot, type = type) {
+getlabels <- function(MigrObj,  dat.slot = "raw", type = c("S", "T", "E")) {
   # arguments parsing
-  type = match.arg(type, c("S", "T", "E"))
+  type <- match.arg(type)
   # data.slot check!
   # in use could be changed to return list without in. pre...
   in.STE <- ifelse(type == "S", "in.spots", ifelse(type == "T", "in.tracks",  "in.edges"))
   lbl.STE <- ifelse(type == "S", "LABEL", ifelse(type == "T", "LABEL",  "LABEL"))
-  STE <- gsub("in.", "", in.STE)
+  STE <- gsub("in\\.", "", in.STE)
   dat.slot = match.arg(dat.slot, slots.in.use(MigrObj)[[in.STE]])
   # if error here, it means, that the data is not available, please check the data.slot and type arguments!
   # fetch data.table
@@ -383,7 +383,7 @@ getlabels <- function(MigrObj,  dat.slot = dat.slot, type = type) {
 #'
 getdt <- function(MigrObj, dat.slot = "raw", type = c("S","T","E")) {
   # arguments parsing
-  type = match.arg(type, c("S", "T", "E"))
+  type <- match.arg(type, c("S", "T", "E"))
   # data.slot check!
   # in use could be changed to return list without in. pre...
   in.STE <- ifelse(type == "S", "in.spots", ifelse(type == "T", "in.tracks",  "in.edges"))
