@@ -10,8 +10,8 @@ spots.slot="raw", cex=0.1,use.opinionated.layout = TRUE)
 }
 
 \arguments{
-\item{MigrObj}{MigrDat object}
-\item{uniq}{A label given to it by the \code{uniq} parameter in the \link{\code{clustering}} Method}
+\item{MigrObj}{MigrDat object, that has been through \link{\code{clustering}}}
+\item{uniq}{A label given to it by the \code{uniq} parameter in the \link{\code{clustering}} method}
 \item{color.by}{Indicates the field to color the dots by, either a
   column name of the trackmate spots, edges, tracks data, or one of
    \code{ILoReg<K>_<uniq>_<type>}
@@ -24,6 +24,14 @@ spots.slot="raw", cex=0.1,use.opinionated.layout = TRUE)
 \item{spots.slot}{Spots slot data,as in dat.slot in \link{\code{clustering}}, currently should be left unchanged}
 \item{cex}{Point size of dots}
 \item{use.opinionated.layout}{Whether or not to use the more spaceconsuming layout}
+}
+
+\examples{
+ \dontrun{
+  migob <- import_XML("file.XML") |>
+           Apply_TMate_Filter() |>
+           clustering(predef = "morphological")
+  plot_umap(migob)}
 }
 
 
