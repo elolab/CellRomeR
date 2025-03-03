@@ -32,11 +32,11 @@ clustering(MigrObj, dat.slot = "raw", type = c("S","T","E"),
   \item{threads}{Number of threads (default 0, i.e. all available)}
   \item{\dots}{Additional arguments passed to \code{\link[ILoReg]{RunParallelICP}}}}
 \details{
-  \subsection{TrackMate Column Selection}
+  \subsection{TrackMate Column Selection}{
   The arguments \code{predef},\code{inc.pattern},
   \code{excl.pattern}, \code{vars} all determine the columns of
   trackate data to consider for clustering.
-}
+}}
 \value{
   The input MigrObj with its \code{clustering} fields set to the result
   of ILoreg clustering, based on the selected columns.
