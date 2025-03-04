@@ -8,7 +8,7 @@ plot_umap <- function(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.s
   
   is_matetype_column <- function(x){
     x %in% colnames(
-      switch(matetype,
+      switch(EXPR = matetype,
              S = 
                MigrObj@spots,
              E =
@@ -19,7 +19,7 @@ plot_umap <- function(MigrObj, uniq="ILoReg", color.by="ILoRegclusters", spots.s
   }
   
   select_matetype_column <- function(x){
-      switch(matetype,
+      switch(EXPR = matetype,
              S = 
                MigrObj@spots,
              E =
