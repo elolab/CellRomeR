@@ -1,8 +1,11 @@
 import_XML <- function(tmXML, dataset = "MigrDatTestXML",
                          experiment = "experiment", sample = "sample",
                          condition = "normal", replicate = NULL, MigrDatObj = NULL){
-  if(!(file.exists(tmXML)))
-    stop(sprintf("Couldn't find file %s", tmXML))
+  if(! ((file.exists(tmXML)) ||
+          # the same check as XML::parseXML that checks for a URL
+          (grep("^(http|ftp|file)://", tmXML, useBytes = TRUE, perl = TRUE))) 
+     )
+    stop(sprintf("Couldn't find file %s, nor does it seem to be a supported URL type", tmXML))
   ### Timing
   strt = Sys.time()
   
