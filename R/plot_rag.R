@@ -29,11 +29,13 @@ plot_rag <- function(MigrObj, clusterType = "ILoRegclusters", feature = NULL, de
   
   ggplot2::ggplot(data = ragplot_data, mapping = ggplot2::aes_string(x = "combinedID", y = "FRAME", fill= "clusters", col = "clusters")) +
     ggplot2::scale_fill_manual(values = clst.cols) + ggplot2::scale_color_manual(values = clst.cols) +
-    ggplot2::scale_y_reverse() +
+    ggplot2::scale_y_reverse(expand=c(0,0)) +
     ggplot2::geom_tile(color="black") + ggplot2::labs(x=xlabel) +
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'black', colour = 'grey'),
                    panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank())
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.text.x=element_blank(),
+                   axis.ticks.x=element_blank())
   
   
 }
