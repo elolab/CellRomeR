@@ -11,7 +11,10 @@ import_XML(tmXML, dataset = "MigrDatTestXML",
 }
 
 \arguments{
-\item{tmXML}{Input XML file from TrackMate export}
+\item{tmXML}{Input XML file from TrackMate export, or an
+  \code{http:}/\code{ftp:}/\code{file:} url pointing to such a file.
+  \code{https:} is
+  not supported by R's \code{XML}, so just leave out the \code{s}}
 \item{dataset}{The name to give the dataset within the `MigrDat` object.
 One `MigrDat` can hold multiple datasets}
 \item{MigrDatObj}{Optional `MigrDat` object to add the dataset to.}
